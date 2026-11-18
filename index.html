@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>증바람 실시간 도우미 (시너지 자동 계산)</title>
+  <title>증바람 실시간 도우미 (시너지 & 획득 제한 반영)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
@@ -72,6 +72,9 @@
 
       <!-- 선택된 챔피언 요약 빌드 카드 -->
       <div id="championBuildCard" class="bg-slate-950/80 border border-slate-800/90 rounded-xl p-3.5 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm"></div>
+
+      <!-- 챔피언별 획득 제한 안내 바 -->
+      <div id="champRestrictionBar" class="flex flex-wrap items-center gap-1.5 text-xs"></div>
     </section>
 
     <!-- 2. 현재 보유 증강 & 시너지 분석 -->
@@ -79,7 +82,7 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-sm font-bold text-white">2. 현재 보유 증강 (최대 4개)</h2>
-          <p class="text-xs text-slate-400">먼저 먹은 증강을 넣으면 아래 3지선다와 치트시트의 시너지 점수가 실시간으로 재계산됩니다.</p>
+          <p class="text-xs text-slate-400">이미 먹은 증강은 선택 목록에서 자동으로 숨겨지며 시너지 점수에만 반영됩니다.</p>
         </div>
         <button onclick="resetOwnedAugments()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-300 border border-slate-700 transition">
           전체 비우기
@@ -92,7 +95,7 @@
       <div id="activeSynergyBar" class="flex flex-wrap items-center gap-2 pt-1 text-xs"></div>
     </section>
 
-    <!-- 3. 인게임 증강 3지선다 비교 (시너지 자동 추천 + 카메라 OCR) -->
+    <!-- 3. 인게임 증강 3지선다 비교 -->
     <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
@@ -116,7 +119,7 @@
     <!-- 4. 보유 증강 반영 실시간 추천 티어표 (치트시트) -->
     <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
       <div class="flex items-center justify-between flex-wrap gap-1">
-        <h2 class="text-sm font-bold text-white">4. 현재 빌드 기준 추천 증강 순위 (실시간 시너지 반영)</h2>
+        <h2 class="text-sm font-bold text-white">4. 현재 빌드 기준 추천 증강 순위 (보유·획득 불가 자동 제외)</h2>
         <span class="text-xs text-slate-400">클릭 시 3지선다 빈 슬롯에 자동 추가</span>
       </div>
       <div id="cheatSheetList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
@@ -140,13 +143,19 @@
         <button onclick="setTierFilter('silver')" id="filter-silver" class="tier-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-600">실버</button>
       </div>
 
-      <input
-        id="augmentSearchInput"
-        type="text"
-        placeholder="증강 이름 또는 초성 (예: ㅂㅅ, ㅅㅂ, ㅃㄱㅂㅌ, ㅊㅎㅇ)..."
-        oninput="renderAugmentPickerList()"
-        class="w-full bg-slate-950 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none"
-      />
+      <div class="flex items-center justify-between gap-2">
+        <input
+          id="augmentSearchInput"
+          type="text"
+          placeholder="증강 이름 또는 초성 (예: ㅂㅅ, ㅅㅂ, ㅃㄱㅂㅌ)..."
+          oninput="renderAugmentPickerList()"
+          class="flex-1 bg-slate-950 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2 text-sm text-white outline-none"
+        />
+        <label class="flex items-center gap-1.5 text-xs text-slate-400 cursor-pointer shrink-0 select-none">
+          <input id="showBannedToggle" type="checkbox" onchange="renderAugmentPickerList()" class="rounded border-slate-600 bg-slate-800 text-amber-500" />
+          <span>획득 불가 포함</span>
+        </label>
+      </div>
 
       <div id="augmentPickerList" class="overflow-y-auto space-y-2 flex-1 pr-1"></div>
     </div>
@@ -163,12 +172,10 @@
         <button onclick="closeScannerModal()" class="text-slate-400 hover:text-white text-sm px-2 py-1">닫기 ✕</button>
       </div>
 
-      <!-- 카메라 비디오 & 3분할 타겟 가이드 -->
       <div class="relative w-full aspect-video bg-slate-950 rounded-xl overflow-hidden border border-slate-700 flex items-center justify-center">
         <video id="cameraVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
         <canvas id="previewCanvas" class="hidden w-full h-full object-contain"></canvas>
 
-        <!-- 3개 증강 제목 가이드 오버레이 -->
         <div id="guideOverlay" class="absolute inset-0 pointer-events-none flex items-center justify-around px-4">
           <div class="w-[29%] h-[24%] border-2 border-rose-400 bg-rose-500/10 rounded-lg flex flex-col justify-between p-1.5">
             <span class="text-[10px] font-bold bg-rose-500 text-white px-1.5 py-0.5 rounded w-fit">1번 증강 제목</span>
@@ -187,13 +194,11 @@
         </div>
       </div>
 
-      <!-- OCR 진행 상태 표시 -->
       <div id="ocrStatusBox" class="hidden bg-slate-950 border border-amber-500/40 rounded-xl p-3 text-xs text-amber-300 flex items-center justify-between">
         <span id="ocrStatusText">한글 OCR 엔진 준비 중...</span>
         <span id="ocrProgressPct" class="font-bold">0%</span>
       </div>
 
-      <!-- 액션 버튼들 -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <button onclick="captureAndRunOCR()" class="py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition">
           📸 지금 화면 스캔하기
@@ -255,8 +260,18 @@
     }
 
     // ==========================================
-    // 2. 특급 증강 시너지 콤보 & 태그 궁합 규칙
+    // 2. 챔피언별 획득 제한 규칙 & 특급 시너지 콤보
     // ==========================================
+    const AUGMENT_REQUIREMENTS = {
+      draw_your_sword: { trait: "ranged", reason: "근접 챔피언 획득 불가 (원거리 전용)" },
+      courage_colossus: { trait: "has_hard_cc", reason: "이동 불가(CC) 스킬 없음" },
+      tormentor: { trait: "has_hard_cc", reason: "이동 불가(CC) 스킬 없음" },
+      earthwake: { trait: "has_dash", reason: "자체 돌진·이동 스킬 없음" },
+      critical_healing: { trait: "has_heal_shield", reason: "회복·보호막 스킬 없음" },
+      first_aid_kit: { trait: "has_heal_shield", reason: "회복·보호막 스킬 없음" },
+      back_to_basics: { trait: "standard_ult", reason: "변신·폼체인지 궁극기 획득 불가" }
+    };
+
     const SYNERGY_COMBOS = [
       {
         pair: ["mystic_punch", "tap_dancer"],
@@ -344,7 +359,6 @@
       }
     ];
 
-    // 서로 다른 태그끼리 만났을 때 추가 시너지를 내는 교차 궁합
     const CROSS_TAG_SYNERGIES = [
       { tags: ["치명타", "주문력"], bonus: 15, label: "스킬 치명타 화력 시너지" },
       { tags: ["공속", "온힛"], bonus: 16, label: "공속·적중 효과 연쇄 시너지" },
@@ -362,6 +376,7 @@
         "ezreal": {
           "name": "이즈리얼",
           "role": "원딜 / 포킹",
+          "traits": ["ranged", "has_dash", "standard_ult"],
           "spells": ["점멸", "회복 또는 총명"],
           "skillOrder": "Q > E > W",
           "startItems": ["여신의 눈물", "광휘의 검"],
@@ -377,6 +392,7 @@
         "lucian": {
           "name": "루시안",
           "role": "원딜 / 폭딜",
+          "traits": ["ranged", "has_dash", "standard_ult"],
           "spells": ["점멸", "유체화 또는 정화"],
           "skillOrder": "Q > E > W",
           "startItems": ["절정의 화살", "장화"],
@@ -392,6 +408,7 @@
         "lux": {
           "name": "럭스",
           "role": "메이지 / 포킹",
+          "traits": ["ranged", "has_hard_cc", "has_heal_shield", "standard_ult"],
           "spells": ["점멸", "총명 또는 방어막"],
           "skillOrder": "E > Q > W",
           "startItems": ["사라진 양피지"],
@@ -407,6 +424,7 @@
         "malphite": {
           "name": "말파이트",
           "role": "탱커 / 이니시",
+          "traits": ["melee", "has_hard_cc", "has_dash", "has_heal_shield", "standard_ult"],
           "spells": ["점멸", "표식(눈덩이)"],
           "skillOrder": "Q > E > W (AP) / W > E > Q (탱)",
           "startItems": ["수호자의 뿔피리", "여신의 눈물"],
@@ -422,6 +440,7 @@
         "rumble": {
           "name": "럼블",
           "role": "브루저 / 광역 AP",
+          "traits": ["melee", "has_heal_shield", "standard_ult"],
           "spells": ["점멸", "표식(눈덩이)"],
           "skillOrder": "Q > E > W",
           "startItems": ["방출의 마법봉", "증폭의 고서"],
@@ -437,6 +456,7 @@
         "jinx": {
           "name": "징크스",
           "role": "원딜 / 하이퍼캐리",
+          "traits": ["ranged", "has_hard_cc", "standard_ult"],
           "spells": ["점멸", "유체화"],
           "skillOrder": "Q > W > E",
           "startItems": ["절정의 화살"],
@@ -452,6 +472,7 @@
         "caitlyn": {
           "name": "케이틀린",
           "role": "원딜 / 사거리·포킹",
+          "traits": ["ranged", "has_hard_cc", "has_dash", "standard_ult"],
           "spells": ["점멸", "유체화 또는 정화"],
           "skillOrder": "Q > W > E",
           "startItems": ["톱날 단검", "장화"],
@@ -467,6 +488,11 @@
         "jhin": {
           "name": "진",
           "role": "원딜 / 폭딜·유틸",
+          "traits": ["ranged", "has_hard_cc", "standard_ult"],
+          "bannedAugments": {
+            "tap_dancer": "공속 변환 메커니즘으로 공속 증강 효율 제한",
+            "dual_wield": "고정 연사 메커니즘으로 쌍수 무기 제외"
+          },
           "spells": ["점멸", "유체화"],
           "skillOrder": "Q > W > E",
           "startItems": ["톱날 단검", "장화"],
@@ -474,7 +500,6 @@
           "recommendAugments": {
             "jeweled_gauntlet": { "tier": "OP", "reason": "커튼 콜(R) 4타와 춤추는 유탄(Q)에 치명타가 적용되어 압도적 화력을 냅니다." },
             "blunt_force": { "tier": "OP", "reason": "진 패시브의 공격력 뻥튀기 공식과 곱연산으로 시너지를 냅니다." },
-            "tap_dancer": { "tier": "S", "reason": "치명타 이속 보너스와 합쳐져 슈퍼카 수준의 카이팅이 가능합니다." },
             "executioner": { "tier": "A", "reason": "4타 처형 딜과 50% 이하 추가 피해의 궁합이 뛰어납니다." },
             "infernal_soul": { "tier": "B", "reason": "장거리 W 속박과 R 견제에 광역 폭발을 더해줍니다." }
           }
@@ -482,6 +507,7 @@
         "kaisa": {
           "name": "카이사",
           "role": "원딜 / 하이브리드·포킹",
+          "traits": ["ranged", "has_dash", "has_heal_shield", "standard_ult"],
           "spells": ["점멸", "유체화 또는 총명"],
           "skillOrder": "Q > W > E",
           "startItems": ["사라진 양피지", "증폭의 고서"],
@@ -497,6 +523,7 @@
         "jayce": {
           "name": "제이스",
           "role": "브루저 / 포킹",
+          "traits": ["ranged", "has_hard_cc", "has_dash"],
           "spells": ["점멸", "총명 또는 표식(눈덩이)"],
           "skillOrder": "Q > W > E",
           "startItems": ["여신의 눈물", "톱날 단검"],
@@ -512,6 +539,7 @@
         "nidalee": {
           "name": "니달리",
           "role": "메이지 / 포킹·힐",
+          "traits": ["ranged", "has_dash", "has_heal_shield"],
           "spells": ["점멸", "총명"],
           "skillOrder": "Q > E > W",
           "startItems": ["사라진 양피지"],
@@ -527,6 +555,7 @@
         "xerath": {
           "name": "제라스",
           "role": "메이지 / 초장거리 포킹",
+          "traits": ["ranged", "has_hard_cc", "standard_ult"],
           "spells": ["점멸", "총명 또는 유체화"],
           "skillOrder": "Q > W > E",
           "startItems": ["사라진 양피지"],
@@ -542,6 +571,7 @@
         "brand": {
           "name": "브랜드",
           "role": "메이지 / 광역 지속딜",
+          "traits": ["ranged", "has_hard_cc", "standard_ult"],
           "spells": ["점멸", "유체화 또는 탈진"],
           "skillOrder": "W > E > Q",
           "startItems": ["사라진 양피지"],
@@ -557,6 +587,7 @@
         "veigar": {
           "name": "베이가",
           "role": "메이지 / 성장형 누커",
+          "traits": ["ranged", "has_hard_cc", "standard_ult"],
           "spells": ["점멸", "유체화"],
           "skillOrder": "Q > W > E",
           "startItems": ["여신의 눈물", "사라진 양피지"],
@@ -572,6 +603,7 @@
         "morgana": {
           "name": "모르가나",
           "role": "메이지 / 속박·유틸",
+          "traits": ["ranged", "has_hard_cc", "has_heal_shield", "standard_ult"],
           "spells": ["점멸", "총명 또는 표식(눈덩이)"],
           "skillOrder": "W > Q > E",
           "startItems": ["사라진 양피지"],
@@ -587,6 +619,7 @@
         "thresh": {
           "name": "쓰레쉬",
           "role": "탱커 / 그랩·유틸",
+          "traits": ["ranged", "has_hard_cc", "has_dash", "has_heal_shield", "standard_ult"],
           "spells": ["점멸", "표식(눈덩이)"],
           "skillOrder": "Q > E > W",
           "startItems": ["수호자의 뿔피리"],
@@ -602,6 +635,7 @@
         "blitzcrank": {
           "name": "블리츠크랭크",
           "role": "탱커 / 그랩",
+          "traits": ["melee", "has_hard_cc", "has_heal_shield", "standard_ult"],
           "spells": ["점멸", "표식(눈덩이)"],
           "skillOrder": "Q > E > W",
           "startItems": ["수호자의 뿔피리", "여신의 눈물"],
@@ -617,6 +651,7 @@
         "leona": {
           "name": "레오나",
           "role": "탱커 / 하드 CC",
+          "traits": ["melee", "has_hard_cc", "has_dash", "standard_ult"],
           "spells": ["점멸", "표식(눈덩이)"],
           "skillOrder": "W > E > Q",
           "startItems": ["수호자의 뿔피리"],
@@ -632,13 +667,13 @@
         "darius": {
           "name": "다리우스",
           "role": "브루저 / 근접 캐리",
+          "traits": ["melee", "has_hard_cc", "has_heal_shield", "standard_ult"],
           "spells": ["점멸", "유체화 또는 표식(눈덩이)"],
           "skillOrder": "Q > E > W",
           "startItems": ["수호자의 뿔피리", "장화"],
           "coreItems": ["발걸음 분쇄기", "스테락의 도전", "망자의 갑옷"],
           "recommendAugments": {
             "goliath": { "tier": "OP", "reason": "체력 35%와 공격력 15% 증가로 5스택 녹서스의 힘 위력이 극대화됩니다." },
-            "earthwake": { "tier": "S", "reason": "유체화·점멸·눈덩이 진입 시 광역 균열 폭발로 적 진영을 붕괴시킵니다." },
             "blade_waltz": { "tier": "S", "reason": "대상 지정 불가 상태로 적진에 파고들어 순식간에 출혈 스택을 쌓습니다." },
             "celestial_body": { "tier": "A", "reason": "출혈 5스택을 쌓을 때까지 버텨주는 핵심 생존력을 제공합니다." },
             "courage_colossus": { "tier": "A", "reason": "포획(E) 적중 시 보호막을 얻어 근접 난전에 강해집니다." }
@@ -647,6 +682,7 @@
         "katarina": {
           "name": "카타리나",
           "role": "암살자 / 한타 초기화",
+          "traits": ["melee", "has_dash", "standard_ult"],
           "spells": ["점멸", "표식(눈덩이)"],
           "skillOrder": "Q > E > W",
           "startItems": ["방출의 마법봉", "증폭의 고서"],
@@ -916,8 +952,37 @@
     let currentPatchLabel = "";
 
     // ==========================================
-    // 5. 핵심 시너지 계산 엔진
+    // 5. 보유 여부 · 획득 가능 여부 · 시너지 계산 엔진
     // ==========================================
+    function isAugmentOwned(augId) {
+      return ownedAugments.includes(augId);
+    }
+
+    function getChampBannedMap(champId = selectedChampId) {
+      const champ = GAME_DATA.champions[champId];
+      if (!champ) return {};
+
+      const bannedMap = Object.assign({}, champ.bannedAugments || {});
+      const traits = new Set(champ.traits || []);
+
+      if (traits.size > 0) {
+        Object.entries(AUGMENT_REQUIREMENTS).forEach(([augId, rule]) => {
+          if (!traits.has(rule.trait) && !bannedMap[augId]) {
+            bannedMap[augId] = rule.reason;
+          }
+        });
+      }
+      return bannedMap;
+    }
+
+    function isAugmentBannedForChamp(augId, champId = selectedChampId) {
+      const bannedMap = getChampBannedMap(champId);
+      if (bannedMap[augId]) {
+        return { banned: true, reason: bannedMap[augId] };
+      }
+      return { banned: false, reason: "" };
+    }
+
     const BASE_TIER_SCORE = { OP: 84, S: 70, A: 56, B: 42 };
     const TIER_ORDER = { OP: 4, S: 3, A: 2, B: 1 };
 
@@ -929,8 +994,26 @@
     }
 
     function evaluateAugmentForChamp(augId) {
+      const banInfo = isAugmentBannedForChamp(augId);
       const champ = GAME_DATA.champions[selectedChampId];
       const aug = GAME_DATA.augments[augId];
+
+      if (banInfo.banned) {
+        return {
+          banned: true,
+          banReason: banInfo.reason,
+          baseTier: "B",
+          finalTier: "B",
+          upgraded: false,
+          score: 0,
+          synergyBonus: 0,
+          synergyTags: [],
+          comboNotes: [],
+          crossLabels: [],
+          reason: `이 챔피언은 획득할 수 없는 증강입니다 (${banInfo.reason}).`
+        };
+      }
+
       const baseRec = (champ && champ.recommendAugments && champ.recommendAugments[augId]) || {
         tier: "B",
         reason: "단독 효율은 무난하지만 보유 증강과의 시너지에 따라 가치가 달라집니다."
@@ -943,7 +1026,6 @@
       const comboNotes = [];
       let synergyBonus = 0;
 
-      // 1) 특급 2중 콤보 매칭 검사
       activeOwned.forEach(ownedId => {
         if (ownedId === augId) return;
         const ownedName = GAME_DATA.augments[ownedId].name;
@@ -955,7 +1037,6 @@
         });
       });
 
-      // 2) 동일 태그 중첩 및 교차 태그 궁합 계산
       const ownedTagCounts = {};
       activeOwned.forEach(id => {
         GAME_DATA.augments[id].tags.forEach(t => {
@@ -969,7 +1050,6 @@
         synergyBonus += stackBonus;
       }
 
-      // 교차 태그 궁합 체크
       const ownedTagSet = new Set(Object.keys(ownedTagCounts));
       const crossLabels = [];
       CROSS_TAG_SYNERGIES.forEach(rule => {
@@ -983,7 +1063,6 @@
         }
       });
 
-      // 프리즘 등급 기본 체급 보정
       if (aug.tier === "prismatic" && baseTier === "B") {
         score += 6;
       }
@@ -994,6 +1073,8 @@
       const upgraded = TIER_ORDER[finalTier] > TIER_ORDER[baseTier];
 
       return {
+        banned: false,
+        banReason: "",
         baseTier,
         finalTier,
         upgraded,
@@ -1044,6 +1125,8 @@
         btn.textContent = champ.name;
         btn.onclick = () => {
           selectedChampId = id;
+          ownedAugments = ownedAugments.map(a => (a && isAugmentBannedForChamp(a, id).banned ? null : a));
+          choiceSlots = choiceSlots.map(a => (a && isAugmentBannedForChamp(a, id).banned ? null : a));
           renderAll();
         };
         container.appendChild(btn);
@@ -1081,6 +1164,23 @@
           </div>
         </div>
       `;
+
+      const resBar = document.getElementById("champRestrictionBar");
+      const bannedMap = getChampBannedMap(selectedChampId);
+      const bannedEntries = Object.entries(bannedMap).filter(([augId]) => GAME_DATA.augments[augId]);
+
+      if (bannedEntries.length === 0) {
+        resBar.innerHTML = `<span class="text-emerald-400/90 font-medium">✓ 주요 증강 획득 제한 없음</span>`;
+      } else {
+        resBar.innerHTML =
+          `<span class="text-rose-400 font-semibold">🚫 획득 불가 증강 (${bannedEntries.length}종 자동 제외됨):</span>` +
+          bannedEntries
+            .map(([augId, reason]) => {
+              const augName = GAME_DATA.augments[augId].name;
+              return `<span title="${reason}" class="px-2 py-0.5 rounded bg-rose-950/70 border border-rose-500/30 text-rose-200 text-[11px]">${augName}</span>`;
+            })
+            .join("");
+      }
     }
 
     function getTierLabel(tier) {
@@ -1130,7 +1230,6 @@
         });
       });
 
-      // 이미 완성된 특급 콤보 확인
       const completedCombos = [];
       SYNERGY_COMBOS.forEach(c => {
         if (activeIds.includes(c.pair[0]) && activeIds.includes(c.pair[1])) {
@@ -1176,11 +1275,10 @@
       const grid = document.getElementById("choiceSlotsGrid");
       grid.innerHTML = "";
 
-      // 채워진 슬롯들의 점수를 먼저 계산해 최고 점수(1순위) 판별
       const evaluations = choiceSlots.map(augId =>
         augId && GAME_DATA.augments[augId] ? evaluateAugmentForChamp(augId) : null
       );
-      const validScores = evaluations.filter(Boolean).map(e => e.score);
+      const validScores = evaluations.filter(e => e && !e.banned).map(e => e.score);
       const maxScore = validScores.length > 0 ? Math.max(...validScores) : -1;
 
       choiceSlots.forEach((augId, idx) => {
@@ -1198,20 +1296,26 @@
         } else {
           const aug = GAME_DATA.augments[augId];
           const t = getTierLabel(aug.tier);
-          const isBestPick = validScores.length >= 2 && evalInfo.score === maxScore;
+          const isBestPick = !evalInfo.banned && validScores.length >= 2 && evalInfo.score === maxScore;
 
           card.className = `border-2 rounded-2xl p-4 bg-slate-950 flex flex-col justify-between min-h-[230px] aug-${aug.tier} ${
             isBestPick ? "best-pick-glow" : ""
           }`;
 
-          const tierBadgeText = evalInfo.upgraded
+          const tierBadgeText = evalInfo.banned
+            ? "획득 불가"
+            : evalInfo.upgraded
             ? `${evalInfo.baseTier} → ${evalInfo.finalTier} 티어`
             : `${evalInfo.finalTier} 티어`;
 
           card.innerHTML = `
             <div class="space-y-2.5">
               ${
-                isBestPick
+                evalInfo.banned
+                  ? `<div class="px-2.5 py-1 rounded-lg bg-rose-950 border border-rose-500/50 text-rose-300 text-xs font-bold">
+                      🚫 획득 불가: ${evalInfo.banReason}
+                    </div>`
+                  : isBestPick
                   ? `<div class="flex items-center justify-between px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 text-xs font-extrabold">
                       <span>👑 시너지 최적 선택</span>
                       <span>종합 ${evalInfo.score}점</span>
@@ -1223,7 +1327,7 @@
               }
 
               <div class="flex items-center justify-between gap-2">
-                <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold tier-${evalInfo.finalTier}">${tierBadgeText}</span>
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold ${evalInfo.banned ? "bg-rose-900 text-rose-200" : "tier-" + evalInfo.finalTier}">${tierBadgeText}</span>
                 <div class="flex items-center gap-1.5">
                   <span class="text-[11px] px-2 py-0.5 rounded border ${t.cls}">${t.text}</span>
                   <button onclick="openPickerModal('choice', ${idx})" class="text-xs text-slate-400 hover:text-white underline">변경</button>
@@ -1287,24 +1391,22 @@
 
     function loadSampleChoices() {
       const champ = GAME_DATA.champions[selectedChampId];
-      const recKeys = champ && champ.recommendAugments ? Object.keys(champ.recommendAugments) : [];
-      const fallbackKeys = Object.keys(GAME_DATA.augments).slice(0, 3);
-      choiceSlots = [
-        recKeys[0] || fallbackKeys[0],
-        recKeys[1] || fallbackKeys[1],
-        recKeys[2] || fallbackKeys[2]
-      ];
+      const validRecKeys = (champ && champ.recommendAugments ? Object.keys(champ.recommendAugments) : [])
+        .filter(id => GAME_DATA.augments[id] && !isAugmentBannedForChamp(id).banned && !isAugmentOwned(id));
+      const validFallbackKeys = Object.keys(GAME_DATA.augments)
+        .filter(id => !isAugmentBannedForChamp(id).banned && !isAugmentOwned(id));
+
+      const pool = [...new Set([...validRecKeys, ...validFallbackKeys])];
+      choiceSlots = [pool[0] || null, pool[1] || null, pool[2] || null];
       renderChoiceSlots();
     }
 
     function renderCheatSheet() {
       const list = document.getElementById("cheatSheetList");
       list.innerHTML = "";
-      const activeOwnedSet = new Set(ownedAugments.filter(Boolean));
 
-      // 보유 증강 시너지까지 합산한 실시간 점수 기준으로 전체 증강 중 상위 12개 정렬
       const ranked = Object.keys(GAME_DATA.augments)
-        .filter(augId => !activeOwnedSet.has(augId))
+        .filter(augId => !isAugmentOwned(augId) && !isAugmentBannedForChamp(augId).banned)
         .map(augId => ({
           augId,
           aug: GAME_DATA.augments[augId],
@@ -1352,7 +1454,7 @@
     }
 
     // ==========================================
-    // 7. 증강 수동 선택 모달 로직
+    // 7. 증강 수동 선택 모달 로직 (이미 먹은 증강 자동 제외)
     // ==========================================
     function openPickerModal(type, index) {
       pickerTarget = { type, index };
@@ -1377,12 +1479,15 @@
     }
 
     function updateTierFilterButtons() {
-      const allAugs = Object.values(GAME_DATA.augments);
+      const availableAugs = Object.entries(GAME_DATA.augments)
+        .filter(([id]) => !isAugmentBannedForChamp(id).banned && !isAugmentOwned(id))
+        .map(([, aug]) => aug);
+
       const counts = {
-        all: allAugs.length,
-        prismatic: allAugs.filter(a => a.tier === "prismatic").length,
-        gold: allAugs.filter(a => a.tier === "gold").length,
-        silver: allAugs.filter(a => a.tier === "silver").length
+        all: availableAugs.length,
+        prismatic: availableAugs.filter(a => a.tier === "prismatic").length,
+        gold: availableAugs.filter(a => a.tier === "gold").length,
+        silver: availableAugs.filter(a => a.tier === "silver").length
       };
       const labels = {
         all: `전체 (${counts.all})`,
@@ -1404,17 +1509,25 @@
 
     function renderAugmentPickerList() {
       const query = document.getElementById("augmentSearchInput").value.trim();
+      const showBanned = document.getElementById("showBannedToggle").checked;
       const list = document.getElementById("augmentPickerList");
       list.innerHTML = "";
 
       const entries = Object.entries(GAME_DATA.augments)
         .filter(([id, aug]) => {
+          // 이미 보유 중인 증강은 항상 목록에서 숨김
+          if (isAugmentOwned(id)) return false;
+          const banInfo = isAugmentBannedForChamp(id);
+          if (!showBanned && banInfo.banned) return false;
           const tierOk = currentTierFilter === "all" || aug.tier === currentTierFilter;
           const textOk = matchKoreanQuery(aug.name, query) || aug.tags.some(t => matchKoreanQuery(t, query));
           return tierOk && textOk;
         })
         .map(([id, aug]) => ({ id, aug, evalInfo: evaluateAugmentForChamp(id) }))
-        .sort((a, b) => b.evalInfo.score - a.evalInfo.score);
+        .sort((a, b) => {
+          if (a.evalInfo.banned !== b.evalInfo.banned) return a.evalInfo.banned ? 1 : -1;
+          return b.evalInfo.score - a.evalInfo.score;
+        });
 
       if (entries.length === 0) {
         list.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">일치하는 증강이 없습니다.</p>`;
@@ -1424,7 +1537,11 @@
       entries.forEach(({ id, aug, evalInfo }) => {
         const t = getTierLabel(aug.tier);
         const row = document.createElement("button");
-        row.className = "w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 flex items-center justify-between gap-2 transition";
+        row.className = `w-full text-left p-3 rounded-xl border flex items-center justify-between gap-2 transition ${
+          evalInfo.banned
+            ? "bg-rose-950/20 border-rose-900/50 opacity-65"
+            : "bg-slate-950 hover:bg-slate-800 border-slate-800"
+        }`;
         row.onclick = () => {
           if (pickerTarget.type === "choice") {
             choiceSlots[pickerTarget.index] = id;
@@ -1435,25 +1552,32 @@
           renderAll();
         };
 
-        const tierText = evalInfo.upgraded ? `${evalInfo.baseTier}→${evalInfo.finalTier}` : evalInfo.finalTier;
+        const tierText = evalInfo.banned
+          ? "획득불가"
+          : evalInfo.upgraded
+          ? `${evalInfo.baseTier}→${evalInfo.finalTier}`
+          : evalInfo.finalTier;
+
         row.innerHTML = `
           <div>
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold tier-${evalInfo.finalTier}">${tierText}</span>
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold ${evalInfo.banned ? "bg-rose-900 text-rose-200" : "tier-" + evalInfo.finalTier}">${tierText}</span>
               <span class="text-sm font-bold text-white">${aug.name}</span>
               <span class="text-[10px] px-1.5 py-0.5 rounded border ${t.cls}">${t.text}</span>
-              ${evalInfo.synergyBonus > 0 ? `<span class="text-[10px] text-amber-400 font-bold">+${evalInfo.synergyBonus} 시너지</span>` : ""}
+              ${!evalInfo.banned && evalInfo.synergyBonus > 0 ? `<span class="text-[10px] text-amber-400 font-bold">+${evalInfo.synergyBonus} 시너지</span>` : ""}
             </div>
-            <p class="text-xs text-slate-400 mt-1 line-clamp-1">${aug.desc}</p>
+            <p class="text-xs ${evalInfo.banned ? "text-rose-300" : "text-slate-400"} mt-1 line-clamp-1">
+              ${evalInfo.banned ? `🚫 ${evalInfo.banReason}` : aug.desc}
+            </p>
           </div>
-          <span class="text-xs font-bold text-slate-300 shrink-0">${evalInfo.score}점</span>
+          <span class="text-xs font-bold text-slate-300 shrink-0">${evalInfo.banned ? "-" : evalInfo.score + "점"}</span>
         `;
         list.appendChild(row);
       });
     }
 
     // ==========================================
-    // 8. 카메라 OCR & 유사도 매칭 로직
+    // 8. 카메라 OCR & 유사도 매칭 (획득 불가 · 이미 먹은 증강 제외)
     // ==========================================
     async function openScannerModal() {
       document.getElementById("scannerModal").classList.remove("hidden");
@@ -1493,6 +1617,9 @@
       let bestScore = -1;
 
       Object.entries(GAME_DATA.augments).forEach(([id, aug]) => {
+        // 획득 불가이거나 이미 보유 중인 증강은 OCR 매칭 후보에서 자동 제외
+        if (isAugmentBannedForChamp(id).banned || isAugmentOwned(id)) return;
+
         const target = aug.name.replace(/\s+/g, "");
         if (cleaned.includes(target) || target.includes(cleaned)) {
           const score = 100 - Math.abs(target.length - cleaned.length);
@@ -1583,7 +1710,7 @@
           if (id) choiceSlots[idx] = id;
         });
 
-        statusText.textContent = "스캔 완료! 시너지 점수가 계산되었습니다.";
+        statusText.textContent = "스캔 완료! 시너지 점수가 반영되었습니다.";
         progressPct.textContent = "100%";
 
         setTimeout(() => {
