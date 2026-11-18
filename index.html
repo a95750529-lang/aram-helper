@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>증바람 실시간 도우미</title>
+  <title>증바람 실시간 도우미 (시너지 자동 계산)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
   <style>
@@ -23,6 +23,10 @@
     .aug-prismatic { border-color: #c084fc; box-shadow: 0 0 12px rgba(192, 132, 252, 0.2); }
     .aug-gold      { border-color: #fbbf24; box-shadow: 0 0 12px rgba(251, 191, 36, 0.15); }
     .aug-silver    { border-color: #94a3b8; }
+    .best-pick-glow {
+      box-shadow: 0 0 24px rgba(245, 158, 11, 0.35);
+      border-color: #fbbf24 !important;
+    }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
@@ -33,7 +37,7 @@
   <header class="sticky top-0 z-30 bg-slate-950/90 backdrop-blur border-b border-slate-800 px-4 py-3">
     <div class="max-w-5xl mx-auto flex items-center justify-between gap-2">
       <div class="flex items-center gap-2 flex-wrap">
-        <span class="px-2 py-0.5 text-xs font-bold rounded bg-amber-500/20 text-amber-400 border border-amber-500/40">ARAM AUGMENT</span>
+        <span class="px-2 py-0.5 text-xs font-bold rounded bg-amber-500/20 text-amber-400 border border-amber-500/40">ARAM SYNERGY</span>
         <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">증바람 실시간 도우미</h1>
         <span id="datasetBadge" class="inline-block text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700"></span>
       </div>
@@ -75,7 +79,7 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-sm font-bold text-white">2. 현재 보유 증강 (최대 4개)</h2>
-          <p class="text-xs text-slate-400">이미 고른 증강을 등록하면 다음 3지선다에서 시너지 점수를 자동 계산합니다.</p>
+          <p class="text-xs text-slate-400">먼저 먹은 증강을 넣으면 아래 3지선다와 치트시트의 시너지 점수가 실시간으로 재계산됩니다.</p>
         </div>
         <button onclick="resetOwnedAugments()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-300 border border-slate-700 transition">
           전체 비우기
@@ -88,12 +92,12 @@
       <div id="activeSynergyBar" class="flex flex-wrap items-center gap-2 pt-1 text-xs"></div>
     </section>
 
-    <!-- 3. 인게임 증강 3지선다 비교 (카메라 OCR + 수동 선택) -->
+    <!-- 3. 인게임 증강 3지선다 비교 (시너지 자동 추천 + 카메라 OCR) -->
     <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-4">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <h2 class="text-sm font-bold text-white">3. 인게임 3지선다 증강 비교</h2>
-          <p class="text-xs text-slate-400">카메라로 모니터 3개 카드를 비추거나 각 슬롯을 눌러 증강을 지정하세요.</p>
+          <h2 class="text-sm font-bold text-white">3. 인게임 3지선다 시너지 비교 & 최적 추천</h2>
+          <p class="text-xs text-slate-400">보유 증강 콤보를 합산해 가장 높은 점수의 증강에 <span class="text-amber-400 font-bold">👑 최적 선택</span>을 표시합니다.</p>
         </div>
         <div class="flex flex-wrap gap-2">
           <button onclick="openScannerModal()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition">
@@ -109,10 +113,10 @@
       <div id="choiceSlotsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
     </section>
 
-    <!-- 4. 챔피언별 전체 추천 티어표 (치트시트) -->
+    <!-- 4. 보유 증강 반영 실시간 추천 티어표 (치트시트) -->
     <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
-      <div class="flex items-center justify-between">
-        <h2 class="text-sm font-bold text-white">4. 선택 챔피언 추천 증강 치트시트</h2>
+      <div class="flex items-center justify-between flex-wrap gap-1">
+        <h2 class="text-sm font-bold text-white">4. 현재 빌드 기준 추천 증강 순위 (실시간 시너지 반영)</h2>
         <span class="text-xs text-slate-400">클릭 시 3지선다 빈 슬롯에 자동 추가</span>
       </div>
       <div id="cheatSheetList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
@@ -251,7 +255,107 @@
     }
 
     // ==========================================
-    // 2. 기본 내장 데이터셋 (챔피언 20종 & 증강 40종)
+    // 2. 특급 증강 시너지 콤보 & 태그 궁합 규칙
+    // ==========================================
+    const SYNERGY_COMBOS = [
+      {
+        pair: ["mystic_punch", "tap_dancer"],
+        name: "무한 쿨감·공속 엔진",
+        bonus: 35,
+        desc: "공속이 빨라질수록 쿨타임 초기화가 연쇄 폭발해 스킬을 쉬지 않고 난사합니다."
+      },
+      {
+        pair: ["mystic_punch", "dual_wield"],
+        name: "더블 온힛 쿨타임 초기화",
+        bonus: 38,
+        desc: "기본 공격 1회당 적중 효과가 2번 터져 모든 스킬 쿨타임이 2.5초씩 즉시 줄어듭니다."
+      },
+      {
+        pair: ["mystic_punch", "symphony_of_war"],
+        name: "치속 무한 스킬 콤보",
+        bonus: 32,
+        desc: "치명적 속도 공속 한계 돌파와 신비한 주먹 쿨감이 결합된 최상급 콤보입니다."
+      },
+      {
+        pair: ["jeweled_gauntlet", "phenomenal_evil"],
+        name: "무한 주문력 치명타 폭딜",
+        bonus: 36,
+        desc: "스킬을 맞출수록 주문력이 무한히 오르고, 그 주문력 계수에 치명타가 터집니다."
+      },
+      {
+        pair: ["jeweled_gauntlet", "eureka"],
+        name: "치명타 포킹 회전율 극대화",
+        bonus: 34,
+        desc: "높은 주문력이 스킬 가속으로 전환되어 치명타 스킬을 쿨타임마다 난사합니다."
+      },
+      {
+        pair: ["jeweled_gauntlet", "vulnerability"],
+        name: "쌍치명타 50% 극대화",
+        bonus: 30,
+        desc: "치명타 확률 50%를 기본 확보하며 스킬과 도트·아이템 피해 모두에 치명타가 적용됩니다."
+      },
+      {
+        pair: ["eureka", "phenomenal_evil"],
+        name: "무한 주문력-스킬가속 순환",
+        bonus: 36,
+        desc: "스킬 적중 → 주문력 상승 → 스킬 가속 증가로 이어지는 영구기관 시너지입니다."
+      },
+      {
+        pair: ["goliath", "heavy_hitter"],
+        name: "초거대 체력 비례 강타",
+        bonus: 34,
+        desc: "거인의 체력 35% 뻥튀기가 강타자의 최대 체력 비례 평타 피해를 직접 증폭합니다."
+      },
+      {
+        pair: ["goliath", "courage_colossus"],
+        name: "불사신 체력 비례 보호막",
+        bonus: 32,
+        desc: "증폭된 최대 체력에 비례해 CC기 적중 시마다 거대한 보호막이 생성됩니다."
+      },
+      {
+        pair: ["goliath", "celestial_body"],
+        name: "레이드 보스 체력 뻥튀기",
+        bonus: 28,
+        desc: "천상의 신체 +1250 체력에 거인의 35% 체력 증폭이 곱연산으로 적용됩니다."
+      },
+      {
+        pair: ["ethereal_weapon", "marksmage"],
+        name: "스킬 평타 계수 연쇄 폭발",
+        bonus: 36,
+        desc: "모든 스킬 적중 시 주문력 100% 계수의 명사수 마법사 온힛 피해가 함께 터집니다."
+      },
+      {
+        pair: ["ethereal_weapon", "mystic_punch"],
+        name: "스킬 적중 쿨타임 초기화",
+        bonus: 35,
+        desc: "평타를 치지 않고 스킬만 맞춰도 신비한 주먹 쿨감 효과가 발동합니다."
+      },
+      {
+        pair: ["critical_healing", "first_aid_kit"],
+        name: "치명타 힐·보호막 증폭",
+        bonus: 30,
+        desc: "회복·보호막 20% 증가 효과에 치명타까지 적용되어 아군이 절대 죽지 않습니다."
+      },
+      {
+        pair: ["earthwake", "blade_waltz"],
+        name: "무적 돌진 균열 폭격",
+        bonus: 32,
+        desc: "검의 왈츠 돌진 경로마다 지진파 폭발이 연쇄 발생해 광역 폭딜을 꽂습니다."
+      }
+    ];
+
+    // 서로 다른 태그끼리 만났을 때 추가 시너지를 내는 교차 궁합
+    const CROSS_TAG_SYNERGIES = [
+      { tags: ["치명타", "주문력"], bonus: 15, label: "스킬 치명타 화력 시너지" },
+      { tags: ["공속", "온힛"], bonus: 16, label: "공속·적중 효과 연쇄 시너지" },
+      { tags: ["쿨감", "주문력"], bonus: 14, label: "스킬 난사·주문력 시너지" },
+      { tags: ["체력", "온힛"], bonus: 14, label: "탱킹·체력비례 타격 시너지" },
+      { tags: ["쿨감", "온힛"], bonus: 14, label: "온힛 쿨타임 순환 시너지" },
+      { tags: ["물리", "기동력"], bonus: 12, label: "돌진·암살 기동 시너지" }
+    ];
+
+    // ==========================================
+    // 3. 기본 내장 데이터셋 (챔피언 20종 & 증강 40종)
     // ==========================================
     const GAME_DATA = {
       "champions": {
@@ -801,7 +905,7 @@
     };
 
     // ==========================================
-    // 3. 애플리케이션 상태 관리
+    // 4. 애플리케이션 상태 관리
     // ==========================================
     let selectedChampId = "ezreal";
     let ownedAugments = [null, null, null, null];
@@ -812,7 +916,98 @@
     let currentPatchLabel = "";
 
     // ==========================================
-    // 4. UI 렌더링 함수들
+    // 5. 핵심 시너지 계산 엔진
+    // ==========================================
+    const BASE_TIER_SCORE = { OP: 84, S: 70, A: 56, B: 42 };
+    const TIER_ORDER = { OP: 4, S: 3, A: 2, B: 1 };
+
+    function scoreToTier(score) {
+      if (score >= 84) return "OP";
+      if (score >= 70) return "S";
+      if (score >= 56) return "A";
+      return "B";
+    }
+
+    function evaluateAugmentForChamp(augId) {
+      const champ = GAME_DATA.champions[selectedChampId];
+      const aug = GAME_DATA.augments[augId];
+      const baseRec = (champ && champ.recommendAugments && champ.recommendAugments[augId]) || {
+        tier: "B",
+        reason: "단독 효율은 무난하지만 보유 증강과의 시너지에 따라 가치가 달라집니다."
+      };
+
+      const baseTier = baseRec.tier;
+      let score = BASE_TIER_SCORE[baseTier] || 42;
+
+      const activeOwned = ownedAugments.filter(id => id && GAME_DATA.augments[id]);
+      const comboNotes = [];
+      let synergyBonus = 0;
+
+      // 1) 특급 2중 콤보 매칭 검사
+      activeOwned.forEach(ownedId => {
+        if (ownedId === augId) return;
+        const ownedName = GAME_DATA.augments[ownedId].name;
+        SYNERGY_COMBOS.forEach(combo => {
+          if (combo.pair.includes(ownedId) && combo.pair.includes(augId)) {
+            synergyBonus += combo.bonus;
+            comboNotes.push(`[${ownedName} + ${aug.name}] ${combo.name}: ${combo.desc}`);
+          }
+        });
+      });
+
+      // 2) 동일 태그 중첩 및 교차 태그 궁합 계산
+      const ownedTagCounts = {};
+      activeOwned.forEach(id => {
+        GAME_DATA.augments[id].tags.forEach(t => {
+          ownedTagCounts[t] = (ownedTagCounts[t] || 0) + 1;
+        });
+      });
+
+      const matchedTags = aug.tags.filter(t => ownedTagCounts[t]);
+      if (matchedTags.length > 0 && comboNotes.length === 0) {
+        const stackBonus = matchedTags.reduce((sum, t) => sum + Math.min(ownedTagCounts[t] * 10, 20), 0);
+        synergyBonus += stackBonus;
+      }
+
+      // 교차 태그 궁합 체크
+      const ownedTagSet = new Set(Object.keys(ownedTagCounts));
+      const crossLabels = [];
+      CROSS_TAG_SYNERGIES.forEach(rule => {
+        const [t1, t2] = rule.tags;
+        const hasCross =
+          (aug.tags.includes(t1) && ownedTagSet.has(t2)) ||
+          (aug.tags.includes(t2) && ownedTagSet.has(t1));
+        if (hasCross) {
+          synergyBonus += rule.bonus;
+          if (!crossLabels.includes(rule.label)) crossLabels.push(rule.label);
+        }
+      });
+
+      // 프리즘 등급 기본 체급 보정
+      if (aug.tier === "prismatic" && baseTier === "B") {
+        score += 6;
+      }
+
+      const finalScore = Math.min(100, score + synergyBonus);
+      const computedTier = scoreToTier(finalScore);
+      const finalTier = TIER_ORDER[computedTier] > TIER_ORDER[baseTier] ? computedTier : baseTier;
+      const upgraded = TIER_ORDER[finalTier] > TIER_ORDER[baseTier];
+
+      return {
+        baseTier,
+        finalTier,
+        upgraded,
+        score: finalScore,
+        synergyBonus,
+        synergyTags: matchedTags,
+        comboNotes,
+        crossLabels,
+        reason: baseRec.reason
+      };
+    }
+
+    // ==========================================
+    // 6. UI 렌더링 함수들
     // ==========================================
     function updateDatasetBadge() {
       const champCount = Object.keys(GAME_DATA.champions).length;
@@ -927,25 +1122,44 @@
 
     function renderSynergyBar() {
       const bar = document.getElementById("activeSynergyBar");
+      const activeIds = ownedAugments.filter(id => id && GAME_DATA.augments[id]);
       const tagCounts = {};
-      ownedAugments.filter(id => id && GAME_DATA.augments[id]).forEach(id => {
+      activeIds.forEach(id => {
         GAME_DATA.augments[id].tags.forEach(tag => {
           tagCounts[tag] = (tagCounts[tag] || 0) + 1;
         });
       });
 
+      // 이미 완성된 특급 콤보 확인
+      const completedCombos = [];
+      SYNERGY_COMBOS.forEach(c => {
+        if (activeIds.includes(c.pair[0]) && activeIds.includes(c.pair[1])) {
+          completedCombos.push(c.name);
+        }
+      });
+
       const entries = Object.entries(tagCounts);
       if (entries.length === 0) {
-        bar.innerHTML = `<span class="text-slate-500">활성 시너지 없음 (보유 증강을 추가하면 태그 시너지가 집계됩니다)</span>`;
+        bar.innerHTML = `<span class="text-slate-500">활성 시너지 없음 (1라운드 증강을 등록하면 다음 선택지부터 시너지 점수가 계산됩니다)</span>`;
         return;
       }
 
-      bar.innerHTML = `<span class="text-slate-400 font-semibold">보유 태그:</span>` +
+      let html = `<span class="text-slate-400 font-semibold">보유 태그:</span>` +
         entries.map(([tag, cnt]) => `
           <span class="px-2 py-0.5 rounded-full ${cnt >= 2 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold" : "bg-slate-800 text-slate-300"}">
-            #${tag} x${cnt} ${cnt >= 2 ? "(시너지 활성)" : ""}
+            #${tag} x${cnt} ${cnt >= 2 ? "(중첩 활성)" : ""}
           </span>
         `).join("");
+
+      if (completedCombos.length > 0) {
+        html += completedCombos.map(name => `
+          <span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/50 font-extrabold">
+            🔥 완성 콤보: ${name}
+          </span>
+        `).join("");
+      }
+
+      bar.innerHTML = html;
     }
 
     function removeOwnedAugment(idx) {
@@ -958,35 +1172,23 @@
       renderAll();
     }
 
-    function evaluateAugmentForChamp(augId) {
-      const champ = GAME_DATA.champions[selectedChampId];
-      const aug = GAME_DATA.augments[augId];
-      const baseRec = (champ && champ.recommendAugments && champ.recommendAugments[augId]) || {
-        tier: "B",
-        reason: "무난하게 활용 가능하지만 핵심 시너지 증강보다는 우선순위가 낮습니다."
-      };
-
-      const ownedTags = new Set();
-      ownedAugments.filter(id => id && GAME_DATA.augments[id]).forEach(id => {
-        GAME_DATA.augments[id].tags.forEach(t => ownedTags.add(t));
-      });
-      const matchedTags = aug.tags.filter(t => ownedTags.has(t));
-
-      return {
-        tier: baseRec.tier,
-        reason: baseRec.reason,
-        synergyTags: matchedTags
-      };
-    }
-
     function renderChoiceSlots() {
       const grid = document.getElementById("choiceSlotsGrid");
       grid.innerHTML = "";
 
+      // 채워진 슬롯들의 점수를 먼저 계산해 최고 점수(1순위) 판별
+      const evaluations = choiceSlots.map(augId =>
+        augId && GAME_DATA.augments[augId] ? evaluateAugmentForChamp(augId) : null
+      );
+      const validScores = evaluations.filter(Boolean).map(e => e.score);
+      const maxScore = validScores.length > 0 ? Math.max(...validScores) : -1;
+
       choiceSlots.forEach((augId, idx) => {
         const card = document.createElement("div");
-        if (!augId || !GAME_DATA.augments[augId]) {
-          card.className = "border-2 border-dashed border-slate-700 hover:border-amber-400/60 rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer min-h-[210px] bg-slate-950/50 transition space-y-2";
+        const evalInfo = evaluations[idx];
+
+        if (!augId || !evalInfo) {
+          card.className = "border-2 border-dashed border-slate-700 hover:border-amber-400/60 rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer min-h-[230px] bg-slate-950/50 transition space-y-2";
           card.onclick = () => openPickerModal("choice", idx);
           card.innerHTML = `
             <span class="w-8 h-8 rounded-full bg-slate-800 text-amber-400 flex items-center justify-center font-bold text-sm">${idx + 1}</span>
@@ -996,13 +1198,32 @@
         } else {
           const aug = GAME_DATA.augments[augId];
           const t = getTierLabel(aug.tier);
-          const evalInfo = evaluateAugmentForChamp(augId);
+          const isBestPick = validScores.length >= 2 && evalInfo.score === maxScore;
 
-          card.className = `border-2 rounded-2xl p-4 bg-slate-950 flex flex-col justify-between min-h-[210px] aug-${aug.tier}`;
+          card.className = `border-2 rounded-2xl p-4 bg-slate-950 flex flex-col justify-between min-h-[230px] aug-${aug.tier} ${
+            isBestPick ? "best-pick-glow" : ""
+          }`;
+
+          const tierBadgeText = evalInfo.upgraded
+            ? `${evalInfo.baseTier} → ${evalInfo.finalTier} 티어`
+            : `${evalInfo.finalTier} 티어`;
+
           card.innerHTML = `
             <div class="space-y-2.5">
+              ${
+                isBestPick
+                  ? `<div class="flex items-center justify-between px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 text-xs font-extrabold">
+                      <span>👑 시너지 최적 선택</span>
+                      <span>종합 ${evalInfo.score}점</span>
+                    </div>`
+                  : `<div class="flex items-center justify-between text-[11px] text-slate-400 px-0.5">
+                      <span>${idx + 1}번 선택지</span>
+                      <span class="font-semibold text-slate-300">종합 ${evalInfo.score}점</span>
+                    </div>`
+              }
+
               <div class="flex items-center justify-between gap-2">
-                <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold tier-${evalInfo.tier}">${evalInfo.tier} 티어</span>
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold tier-${evalInfo.finalTier}">${tierBadgeText}</span>
                 <div class="flex items-center gap-1.5">
                   <span class="text-[11px] px-2 py-0.5 rounded border ${t.cls}">${t.text}</span>
                   <button onclick="openPickerModal('choice', ${idx})" class="text-xs text-slate-400 hover:text-white underline">변경</button>
@@ -1015,19 +1236,36 @@
               </div>
 
               ${
-                evalInfo.synergyTags.length > 0
-                  ? `<div class="px-2.5 py-1.5 rounded-lg bg-emerald-950/70 border border-emerald-500/40 text-xs text-emerald-300 font-semibold">
-                      ⚡ 보유 증강 시너지: ${evalInfo.synergyTags.map(tag => "#" + tag).join(", ")}
+                evalInfo.comboNotes.length > 0
+                  ? `<div class="p-2.5 rounded-lg bg-amber-950/70 border border-amber-500/50 text-xs text-amber-200 space-y-1">
+                      <div class="font-extrabold text-amber-400">🔥 특급 시너지 콤보 발동 (+${evalInfo.synergyBonus}점)</div>
+                      ${evalInfo.comboNotes.map(note => `<p class="leading-relaxed">${note}</p>`).join("")}
+                    </div>`
+                  : ""
+              }
+
+              ${
+                evalInfo.comboNotes.length === 0 && (evalInfo.synergyTags.length > 0 || evalInfo.crossLabels.length > 0)
+                  ? `<div class="px-2.5 py-1.5 rounded-lg bg-emerald-950/70 border border-emerald-500/40 text-xs text-emerald-300 font-semibold space-y-0.5">
+                      <div>⚡ 시너지 보너스 (+${evalInfo.synergyBonus}점)</div>
+                      <div class="text-[11px] text-emerald-200/90">
+                        ${[
+                          ...evalInfo.synergyTags.map(tag => "#" + tag + " 중첩"),
+                          ...evalInfo.crossLabels
+                        ].join(" · ")}
+                      </div>
                     </div>`
                   : ""
               }
 
               <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 leading-relaxed">
-                💡 <span class="font-semibold text-amber-300">추천 이유:</span> ${evalInfo.reason}
+                💡 <span class="font-semibold text-amber-300">기본 평가:</span> ${evalInfo.reason}
               </div>
             </div>
 
-            <button onclick="pickAugmentToOwned('${augId}')" class="mt-3 w-full py-2 rounded-xl bg-slate-800 hover:bg-emerald-600 text-white font-bold text-xs transition">
+            <button onclick="pickAugmentToOwned('${augId}')" class="mt-3 w-full py-2 rounded-xl ${
+              isBestPick ? "bg-amber-500 hover:bg-amber-400 text-slate-950" : "bg-slate-800 hover:bg-emerald-600 text-white"
+            } font-bold text-xs transition">
               ✓ 이 증강 선택 (보유 슬롯 등록)
             </button>
           `;
@@ -1051,46 +1289,61 @@
       const champ = GAME_DATA.champions[selectedChampId];
       const recKeys = champ && champ.recommendAugments ? Object.keys(champ.recommendAugments) : [];
       const fallbackKeys = Object.keys(GAME_DATA.augments).slice(0, 3);
-      const picked = [
+      choiceSlots = [
         recKeys[0] || fallbackKeys[0],
         recKeys[1] || fallbackKeys[1],
         recKeys[2] || fallbackKeys[2]
       ];
-      choiceSlots = picked;
       renderChoiceSlots();
     }
 
     function renderCheatSheet() {
-      const champ = GAME_DATA.champions[selectedChampId];
       const list = document.getElementById("cheatSheetList");
       list.innerHTML = "";
-      if (!champ || !champ.recommendAugments) return;
+      const activeOwnedSet = new Set(ownedAugments.filter(Boolean));
 
-      const tierRank = { OP: 1, S: 2, A: 3, B: 4 };
-      const sorted = Object.entries(champ.recommendAugments)
-        .filter(([augId]) => GAME_DATA.augments[augId])
-        .sort((a, b) => (tierRank[a[1].tier] || 9) - (tierRank[b[1].tier] || 9))
+      // 보유 증강 시너지까지 합산한 실시간 점수 기준으로 전체 증강 중 상위 12개 정렬
+      const ranked = Object.keys(GAME_DATA.augments)
+        .filter(augId => !activeOwnedSet.has(augId))
+        .map(augId => ({
+          augId,
+          aug: GAME_DATA.augments[augId],
+          evalInfo: evaluateAugmentForChamp(augId)
+        }))
+        .sort((a, b) => b.evalInfo.score - a.evalInfo.score)
         .slice(0, 12);
 
-      sorted.forEach(([augId, info]) => {
-        const aug = GAME_DATA.augments[augId];
+      ranked.forEach(({ augId, aug, evalInfo }) => {
         const t = getTierLabel(aug.tier);
         const item = document.createElement("div");
-        item.className = "p-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-amber-400/50 cursor-pointer transition flex items-start justify-between gap-3";
+        item.className = `p-3 rounded-xl bg-slate-950 border ${
+          evalInfo.comboNotes.length > 0 ? "border-amber-500/60" : "border-slate-800"
+        } hover:border-amber-400/70 cursor-pointer transition flex items-start justify-between gap-3`;
+
         item.onclick = () => {
           const emptyChoice = choiceSlots.findIndex(v => v === null);
           const targetIdx = emptyChoice !== -1 ? emptyChoice : 0;
           choiceSlots[targetIdx] = augId;
           renderChoiceSlots();
         };
+
+        const tierBadge = evalInfo.upgraded
+          ? `${evalInfo.baseTier}→${evalInfo.finalTier}`
+          : evalInfo.finalTier;
+
+        const descText = evalInfo.comboNotes.length > 0
+          ? `🔥 ${evalInfo.comboNotes[0]}`
+          : evalInfo.reason;
+
         item.innerHTML = `
           <div class="space-y-1">
-            <div class="flex items-center gap-2">
-              <span class="px-2 py-0.5 rounded text-[11px] font-extrabold tier-${info.tier}">${info.tier}</span>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="px-2 py-0.5 rounded text-[11px] font-extrabold tier-${evalInfo.finalTier}">${tierBadge}</span>
               <span class="text-sm font-bold text-white">${aug.name}</span>
               <span class="text-[10px] px-1.5 py-0.5 rounded border ${t.cls}">${t.text}</span>
+              <span class="text-[11px] text-amber-400 font-bold">${evalInfo.score}점</span>
             </div>
-            <p class="text-xs text-slate-400">${info.reason}</p>
+            <p class="text-xs text-slate-400 line-clamp-2">${descText}</p>
           </div>
           <span class="text-xs text-amber-400 font-bold shrink-0">+ 담기</span>
         `;
@@ -1099,7 +1352,7 @@
     }
 
     // ==========================================
-    // 5. 증강 수동 선택 모달 로직
+    // 7. 증강 수동 선택 모달 로직
     // ==========================================
     function openPickerModal(type, index) {
       pickerTarget = { type, index };
@@ -1154,20 +1407,22 @@
       const list = document.getElementById("augmentPickerList");
       list.innerHTML = "";
 
-      const entries = Object.entries(GAME_DATA.augments).filter(([id, aug]) => {
-        const tierOk = currentTierFilter === "all" || aug.tier === currentTierFilter;
-        const textOk = matchKoreanQuery(aug.name, query) || aug.tags.some(t => matchKoreanQuery(t, query));
-        return tierOk && textOk;
-      });
+      const entries = Object.entries(GAME_DATA.augments)
+        .filter(([id, aug]) => {
+          const tierOk = currentTierFilter === "all" || aug.tier === currentTierFilter;
+          const textOk = matchKoreanQuery(aug.name, query) || aug.tags.some(t => matchKoreanQuery(t, query));
+          return tierOk && textOk;
+        })
+        .map(([id, aug]) => ({ id, aug, evalInfo: evaluateAugmentForChamp(id) }))
+        .sort((a, b) => b.evalInfo.score - a.evalInfo.score);
 
       if (entries.length === 0) {
         list.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">일치하는 증강이 없습니다.</p>`;
         return;
       }
 
-      entries.forEach(([id, aug]) => {
+      entries.forEach(({ id, aug, evalInfo }) => {
         const t = getTierLabel(aug.tier);
-        const evalInfo = evaluateAugmentForChamp(id);
         const row = document.createElement("button");
         row.className = "w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 flex items-center justify-between gap-2 transition";
         row.onclick = () => {
@@ -1179,23 +1434,26 @@
           closePickerModal();
           renderAll();
         };
+
+        const tierText = evalInfo.upgraded ? `${evalInfo.baseTier}→${evalInfo.finalTier}` : evalInfo.finalTier;
         row.innerHTML = `
           <div>
-            <div class="flex items-center gap-2">
-              <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold tier-${evalInfo.tier}">${evalInfo.tier}</span>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold tier-${evalInfo.finalTier}">${tierText}</span>
               <span class="text-sm font-bold text-white">${aug.name}</span>
               <span class="text-[10px] px-1.5 py-0.5 rounded border ${t.cls}">${t.text}</span>
+              ${evalInfo.synergyBonus > 0 ? `<span class="text-[10px] text-amber-400 font-bold">+${evalInfo.synergyBonus} 시너지</span>` : ""}
             </div>
             <p class="text-xs text-slate-400 mt-1 line-clamp-1">${aug.desc}</p>
           </div>
-          <span class="text-xs text-slate-500 shrink-0">${aug.tags.join("·")}</span>
+          <span class="text-xs font-bold text-slate-300 shrink-0">${evalInfo.score}점</span>
         `;
         list.appendChild(row);
       });
     }
 
     // ==========================================
-    // 6. 카메라 OCR & 유사도 매칭 로직
+    // 8. 카메라 OCR & 유사도 매칭 로직
     // ==========================================
     async function openScannerModal() {
       document.getElementById("scannerModal").classList.remove("hidden");
@@ -1325,7 +1583,7 @@
           if (id) choiceSlots[idx] = id;
         });
 
-        statusText.textContent = "스캔 완료! 3지선다 슬롯에 반영되었습니다.";
+        statusText.textContent = "스캔 완료! 시너지 점수가 계산되었습니다.";
         progressPct.textContent = "100%";
 
         setTimeout(() => {
@@ -1376,7 +1634,7 @@
       ctx.fillStyle = "#0b1120";
       ctx.fillRect(0, 0, 1280, 720);
 
-      const testCards = ["신비한 주먹", "보석 건틀릿", "빵과 버터"];
+      const testCards = ["경이로운 악", "능숙함", "빵과 버터"];
       const xs = [60, 460, 860];
 
       testCards.forEach((title, i) => {
@@ -1400,7 +1658,7 @@
     }
 
     // ==========================================
-    // 7. JSON 모달 및 외부 data.json 자동 로드
+    // 9. JSON 모달 및 외부 data.json 자동 로드
     // ==========================================
     function openJsonModal() {
       document.getElementById("jsonCodeView").textContent = JSON.stringify(GAME_DATA, null, 2);
