@@ -11,7 +11,7 @@ CDRAGON_ARENA_KO_URL = "https://raw.communitydragon.org/latest/cdragon/arena/ko_
 STATS_API_URL = os.getenv("ARAM_STATS_API_URL", "").strip()
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; AramAugmentUpdater/2.0)"
+    "User-Agent": "Mozilla/5.0 (compatible; AramAugmentUpdater/3.0)"
 }
 
 ROLE_KO_MAP = {
@@ -42,6 +42,28 @@ ROLE_TAG_PREFS = {
     "Fighter": ["체력", "물리", "온힛", "기동력"],
     "Assassin": ["물리", "치명타", "기동력", "쿨감"],
     "Support": ["유틸", "쿨감", "체력"]
+}
+
+# 증강별 획득 필수 조건 및 사유
+AUGMENT_REQUIREMENTS = {
+    "draw_your_sword": ("ranged", "근접 챔피언 획득 불가 (원거리 전용)"),
+    "courage_colossus": ("has_hard_cc", "이동 불가(CC) 스킬 없음"),
+    "tormentor": ("has_hard_cc", "이동 불가(CC) 스킬 없음"),
+    "earthwake": ("has_dash", "자체 돌진·이동 스킬 없음"),
+    "critical_healing": ("has_heal_shield", "회복·보호막 스킬 없음"),
+    "first_aid_kit": ("has_heal_shield", "회복·보호막 스킬 없음"),
+    "back_to_basics": ("standard_ult", "변신·폼체인지 궁극기 획득 불가")
+}
+
+# 변신형 궁극기 챔피언 목록
+SHAPESHIFTER_CHAMPIONS = {
+    "nidalee", "jayce", "elise", "udyr", "shyvana", "gnar", "reksai"
+}
+
+# 챔피언별 개별 예외 차단 목록 (필요 시 자유롭게 추가)
+CUSTOM_BANNED_OVERRIDES = {
+    "jhin": ["tap_dancer", "symphony_of_war", "dual_wield"],
+    "urgot": ["draw_your_sword"]
 }
 
 ARCHETYPE_BUILD_PRESETS = {
@@ -169,9 +191,10 @@ def fetch_cdragon_augments() -> dict:
     return parsed
 
 
-def fetch_ddragon_champions(patch: str) -> dict:
-    url = f"https://ddragon.leagueoflegends.com/cdn/{patch}/data/ko_KR/champion.json"
-    res = requests.get(url, headers=HEADERS, timeout=15)
+def fetch_ddragon_champions_full(patch: str) -> dict:
+    """스킬 설명문과 사거리가 모두 포함된 championFull.json 조회"""
+    url = f"https://ddragon.leagueoflegends.com/cdn/{patch}/data/ko_KR/championFull.json"
+    res = requests.get(url, headers=HEADERS, timeout=20)
     res.raise_for_status()
     return res.json().get("data", {})
 
@@ -211,6 +234,46 @@ def fetch_ddragon_aram_items(patch: str) -> dict:
 
     legendary_pool.sort(key=lambda x: x["gold"], reverse=True)
     return {"by_name": valid_by_name, "legendary_pool": legendary_pool}
+
+
+def analyze_champion_traits_and_bans(champ_key: str, c_info: dict, all_augments: dict) -> tuple[list[str], dict]:
+    """챔피언 사거리와 스킬 설명을 분석해 특성(traits)과 획득 불가 증강(bannedAugments) 산출"""
+    traits = set()
+    attack_range = c_info.get("stats", {}).get("attackrange", 125)
+    traits.add("ranged" if attack_range > 250 else "melee")
+
+    if champ_key not in SHAPESHIFTER_CHAMPIONS:
+        traits.add("standard_ult")
+
+    # 패시브 + Q/W/E/R 스킬 텍스트 통합 분석
+    texts = [clean_description(c_info.get("passive", {}).get("description", ""))]
+    for spell in c_info.get("spells", []):
+        texts.append(clean_description(spell.get("description", "")))
+        texts.append(clean_description(spell.get("tooltip", "")))
+    combined_text = " ".join(texts)
+
+    hard_cc_keywords = ["기절", "속박", "공중으로", "밀어내", "밀쳐", "끌어당", "도발", "공포", "매혹", "제압", "수면", "변이"]
+    if any(kw in combined_text for kw in hard_cc_keywords):
+        traits.add("has_hard_cc")
+
+    dash_keywords = ["돌진", "도약", "순간이동", "점프", "뒤로 물러", "앞으로 뜁", "파고들"]
+    if any(kw in combined_text for kw in dash_keywords):
+        traits.add("has_dash")
+
+    heal_shield_keywords = ["체력을 회복", "보호막", "치유", "회복시킵니다", "회복합니다"]
+    if any(kw in combined_text for kw in heal_shield_keywords):
+        traits.add("has_heal_shield")
+
+    banned = {}
+    for aug_id, (req_trait, reason) in AUGMENT_REQUIREMENTS.items():
+        if aug_id in all_augments and req_trait not in traits:
+            banned[aug_id] = reason
+
+    for override_aug in CUSTOM_BANNED_OVERRIDES.get(champ_key, []):
+        if override_aug in all_augments:
+            banned[override_aug] = "챔피언 메커니즘상 획득 불가"
+
+    return sorted(list(traits)), banned
 
 
 def determine_champion_archetype(c_info: dict) -> str:
@@ -290,14 +353,19 @@ def fetch_external_tier_stats() -> dict:
         return {}
 
 
-def build_auto_recommendations(champ_tags: list[str], all_augments: dict, existing_recs: dict) -> dict:
-    recs = dict(existing_recs)
+def build_auto_recommendations(
+    champ_tags: list[str],
+    all_augments: dict,
+    existing_recs: dict,
+    banned_augments: dict
+) -> dict:
+    recs = {k: v for k, v in existing_recs.items() if k not in banned_augments}
     preferred_tags = []
     for role in champ_tags:
         preferred_tags.extend(ROLE_TAG_PREFS.get(role, []))
 
     for aug_id, aug in all_augments.items():
-        if aug_id in recs:
+        if aug_id in recs or aug_id in banned_augments:
             continue
         overlap = len(set(aug["tags"]) & set(preferred_tags))
         if overlap == 0:
@@ -335,7 +403,7 @@ def main():
             merged_augments[aug_id]["desc"] = aug_info["desc"]
             merged_augments[aug_id]["tier"] = aug_info["tier"]
 
-    ddragon_champs = fetch_ddragon_champions(patch)
+    ddragon_champs = fetch_ddragon_champions_full(patch)
     aram_items = fetch_ddragon_aram_items(patch)
     external_stats = fetch_external_tier_stats()
     merged_champions = dict(existing.get("champions", {}))
@@ -345,12 +413,15 @@ def main():
         champ_key = raw_id.lower()
         champ_name = c_info["name"]
         primary_roles = c_info.get("tags", ["Fighter"])
+        traits, banned_augments = analyze_champion_traits_and_bans(champ_key, c_info, merged_augments)
 
         if champ_key not in merged_champions:
             auto_build = resolve_items_from_ddragon(c_info, aram_items)
             merged_champions[champ_key] = {
                 "name": champ_name,
                 "role": auto_build["role"],
+                "traits": traits,
+                "bannedAugments": banned_augments,
                 "spells": auto_build["spells"],
                 "skillOrder": auto_build["skillOrder"],
                 "startItems": auto_build["startItems"],
@@ -359,6 +430,8 @@ def main():
             }
             new_champ_count += 1
         else:
+            merged_champions[champ_key]["traits"] = traits
+            merged_champions[champ_key]["bannedAugments"] = banned_augments
             current_cores = merged_champions[champ_key].get("coreItems", [])
             if any(item not in aram_items["by_name"] for item in current_cores):
                 refreshed = resolve_items_from_ddragon(c_info, aram_items)
@@ -366,12 +439,14 @@ def main():
 
         ext_champ_recs = external_stats.get(champ_key, {}).get("recommendAugments")
         if ext_champ_recs:
-            merged_champions[champ_key]["recommendAugments"].update(ext_champ_recs)
+            filtered_ext = {k: v for k, v in ext_champ_recs.items() if k not in banned_augments}
+            merged_champions[champ_key]["recommendAugments"].update(filtered_ext)
         else:
             merged_champions[champ_key]["recommendAugments"] = build_auto_recommendations(
                 primary_roles,
                 merged_augments,
-                merged_champions[champ_key].get("recommendAugments", {})
+                merged_champions[champ_key].get("recommendAugments", {}),
+                banned_augments
             )
 
     kst = timezone(timedelta(hours=9))
@@ -392,8 +467,7 @@ def main():
 
     print(
         f"업데이트 완료: 챔피언 {len(merged_champions)}종 (신규 {new_champ_count}종), "
-        f"증강 {len(merged_augments)}종 (신규 {new_aug_count}종), "
-        f"칼바람 유효 아이템 {len(aram_items['by_name'])}종 검증 완료"
+        f"증강 {len(merged_augments)}종 (신규 {new_aug_count}종)"
     )
 
 
