@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>증바람 실시간 도우미</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <style>
+    body {
+      background-color: #090d16;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Malgun Gothic", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .tier-OP { background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; }
+    .tier-S  { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; }
+    .tier-A  { background: linear-gradient(135deg, #3b82f6, #06b6d4); color: #fff; }
+    .tier-B  { background: #334155; color: #cbd5e1; }
+    .aug-prismatic { border-color: #c084fc; box-shadow: 0 0 12px rgba(192, 132, 252, 0.2); }
+    .aug-gold      { border-color: #fbbf24; box-shadow: 0 0 12px rgba(251, 191, 36, 0.15); }
+    .aug-silver    { border-color: #94a3b8; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen pb-16">
+
+  <!-- 상단 헤더 -->
+  <header class="sticky top-0 z-30 bg-slate-950/90 backdrop-blur border-b border-slate-800 px-4 py-3">
+    <div class="max-w-5xl mx-auto flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="px-2 py-0.5 text-xs font-bold rounded bg-amber-500/20 text-amber-400 border border-amber-500/40">ARAM AUGMENT</span>
+        <h1 class="text-base sm:text-lg font-bold tracking-tight text-white">증바람 실시간 도우미</h1>
+        <span id="datasetBadge" class="inline-block text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700"></span>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button onclick="openJsonModal()" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition">
+          JSON 데이터
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 pt-4 space-y-5">
+
+    <!-- 1. 챔피언 초성 검색 & 선택 -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider">1. 내 챔피언 선택 (초성 검색 가능: ㅇㅈ, ㄹㅅ, ㅋㅌㄹ, ㅂㄹ 등)</label>
+        <div class="relative w-full sm:w-64">
+          <input
+            id="champSearchInput"
+            type="text"
+            placeholder="챔피언 이름 또는 초성 입력..."
+            oninput="renderChampionList()"
+            class="w-full bg-slate-950 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 outline-none"
+          />
+          <button onclick="clearChampSearch()" class="absolute right-2.5 top-2 text-xs text-slate-500 hover:text-slate-300">초기화</button>
+        </div>
+      </div>
+
+      <!-- 챔피언 빠른 선택 버튼 리스트 -->
+      <div id="championChips" class="flex gap-2 overflow-x-auto no-scrollbar pb-1"></div>
+
+      <!-- 선택된 챔피언 요약 빌드 카드 -->
+      <div id="championBuildCard" class="bg-slate-950/80 border border-slate-800/90 rounded-xl p-3.5 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm"></div>
+    </section>
+
+    <!-- 2. 현재 보유 증강 & 시너지 분석 -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-bold text-white">2. 현재 보유 증강 (최대 4개)</h2>
+          <p class="text-xs text-slate-400">이미 고른 증강을 등록하면 다음 3지선다에서 시너지 점수를 자동 계산합니다.</p>
+        </div>
+        <button onclick="resetOwnedAugments()" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-950 text-slate-400 hover:text-rose-300 border border-slate-700 transition">
+          전체 비우기
+        </button>
+      </div>
+
+      <div id="ownedAugmentsGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5"></div>
+
+      <!-- 활성 시너지 표시 바 -->
+      <div id="activeSynergyBar" class="flex flex-wrap items-center gap-2 pt-1 text-xs"></div>
+    </section>
+
+    <!-- 3. 인게임 증강 3지선다 비교 (카메라 OCR + 수동 선택) -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h2 class="text-sm font-bold text-white">3. 인게임 3지선다 증강 비교</h2>
+          <p class="text-xs text-slate-400">카메라로 모니터 3개 카드를 비추거나 각 슬롯을 눌러 증강을 지정하세요.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="openScannerModal()" class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20 transition">
+            <span>📷 카메라로 3지선다 스캔</span>
+          </button>
+          <button onclick="loadSampleChoices()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs border border-slate-700 transition">
+            샘플 3지선다
+          </button>
+        </div>
+      </div>
+
+      <!-- 3개 비교 카드 -->
+      <div id="choiceSlotsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-3"></div>
+    </section>
+
+    <!-- 4. 챔피언별 전체 추천 티어표 (치트시트) -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-bold text-white">4. 선택 챔피언 추천 증강 치트시트</h2>
+        <span class="text-xs text-slate-400">클릭 시 3지선다 빈 슬롯에 자동 추가</span>
+      </div>
+      <div id="cheatSheetList" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+    </section>
+
+  </main>
+
+  <!-- 증강 수동 선택 모달 -->
+  <div id="augmentPickerModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-t-2xl sm:rounded-2xl p-4 space-y-3 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between">
+        <h3 id="pickerModalTitle" class="text-base font-bold text-white">증강 선택</h3>
+        <button onclick="closePickerModal()" class="text-slate-400 hover:text-white text-sm px-2 py-1">닫기 ✕</button>
+      </div>
+
+      <!-- 등급 빠른 필터 -->
+      <div class="flex gap-1.5">
+        <button onclick="setTierFilter('all')" id="filter-all" class="tier-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950">전체</button>
+        <button onclick="setTierFilter('prismatic')" id="filter-prismatic" class="tier-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-purple-300 border border-purple-500/30">프리즘</button>
+        <button onclick="setTierFilter('gold')" id="filter-gold" class="tier-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-amber-300 border border-amber-500/30">골드</button>
+        <button onclick="setTierFilter('silver')" id="filter-silver" class="tier-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-600">실버</button>
+      </div>
+
+      <input
+        id="augmentSearchInput"
+        type="text"
+        placeholder="증강 이름 또는 초성 (예: ㅂㅅ, ㅅㅂ, ㅃㄱㅂㅌ, ㅊㅎㅇ)..."
+        oninput="renderAugmentPickerList()"
+        class="w-full bg-slate-950 border border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none"
+      />
+
+      <div id="augmentPickerList" class="overflow-y-auto space-y-2 flex-1 pr-1"></div>
+    </div>
+  </div>
+
+  <!-- 카메라 OCR 스캐너 모달 -->
+  <div id="scannerModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-sm flex items-center justify-center p-3">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold text-white">📷 인게임 3지선다 카메라 스캐너</h3>
+          <p class="text-xs text-slate-400">모니터의 증강 카드 3개 제목이 각 색상 박스에 들어가도록 맞춰주세요.</p>
+        </div>
+        <button onclick="closeScannerModal()" class="text-slate-400 hover:text-white text-sm px-2 py-1">닫기 ✕</button>
+      </div>
+
+      <!-- 카메라 비디오 & 3분할 타겟 가이드 -->
+      <div class="relative w-full aspect-video bg-slate-950 rounded-xl overflow-hidden border border-slate-700 flex items-center justify-center">
+        <video id="cameraVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+        <canvas id="previewCanvas" class="hidden w-full h-full object-contain"></canvas>
+
+        <!-- 3개 증강 제목 가이드 오버레이 -->
+        <div id="guideOverlay" class="absolute inset-0 pointer-events-none flex items-center justify-around px-4">
+          <div class="w-[29%] h-[24%] border-2 border-rose-400 bg-rose-500/10 rounded-lg flex flex-col justify-between p-1.5">
+            <span class="text-[10px] font-bold bg-rose-500 text-white px-1.5 py-0.5 rounded w-fit">1번 증강 제목</span>
+          </div>
+          <div class="w-[29%] h-[24%] border-2 border-sky-400 bg-sky-500/10 rounded-lg flex flex-col justify-between p-1.5">
+            <span class="text-[10px] font-bold bg-sky-500 text-white px-1.5 py-0.5 rounded w-fit">2번 증강 제목</span>
+          </div>
+          <div class="w-[29%] h-[24%] border-2 border-purple-400 bg-purple-500/10 rounded-lg flex flex-col justify-between p-1.5">
+            <span class="text-[10px] font-bold bg-purple-500 text-white px-1.5 py-0.5 rounded w-fit">3번 증강 제목</span>
+          </div>
+        </div>
+
+        <div id="cameraFallbackMsg" class="hidden absolute inset-0 bg-slate-950/90 flex flex-col items-center justify-center p-4 text-center space-y-2">
+          <p class="text-sm font-semibold text-amber-400">카메라를 바로 열 수 없는 환경입니다.</p>
+          <p class="text-xs text-slate-400">HTTPS 환경이 아니거나 권한이 차단되었습니다. 아래 '사진 불러오기' 또는 '가상 모니터 OCR 테스트'를 사용해 보세요.</p>
+        </div>
+      </div>
+
+      <!-- OCR 진행 상태 표시 -->
+      <div id="ocrStatusBox" class="hidden bg-slate-950 border border-amber-500/40 rounded-xl p-3 text-xs text-amber-300 flex items-center justify-between">
+        <span id="ocrStatusText">한글 OCR 엔진 준비 중...</span>
+        <span id="ocrProgressPct" class="font-bold">0%</span>
+      </div>
+
+      <!-- 액션 버튼들 -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <button onclick="captureAndRunOCR()" class="py-2.5 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition">
+          📸 지금 화면 스캔하기
+        </button>
+        <label class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs text-center border border-slate-700 cursor-pointer transition">
+          🖼️ 스크린샷/사진 불러오기
+          <input type="file" accept="image/*" onchange="handleImageUpload(event)" class="hidden" />
+        </label>
+        <button onclick="runVirtualMonitorTest()" class="py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition">
+          🧪 가상 모니터 OCR 테스트
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON 데이터 확인 모달 -->
+  <div id="jsonModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white">현재 적용된 챔피언 & 증강 JSON 데이터</h3>
+        <div class="flex gap-2">
+          <button onclick="copyJsonData()" class="text-xs px-3 py-1.5 rounded-lg bg-amber-500 text-slate-950 font-bold">복사하기</button>
+          <button onclick="closeJsonModal()" class="text-xs px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300">닫기</button>
+        </div>
+      </div>
+      <pre id="jsonCodeView" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-emerald-300 overflow-auto max-h-[60vh]"></pre>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. 한글 초성 추출 유틸리티
+    // ==========================================
+    const CHOSUNG_LIST = [
+      "ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ",
+      "ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"
+    ];
+
+    function getChosung(str) {
+      let result = "";
+      for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i) - 44032;
+        if (code >= 0 && code <= 11171) {
+          result += CHOSUNG_LIST[Math.floor(code / 588)];
+        } else {
+          result += str.charAt(i);
+        }
+      }
+      return result;
+    }
+
+    function matchKoreanQuery(target, query) {
+      if (!query) return true;
+      const cleanTarget = target.replace(/\s+/g, "").toLowerCase();
+      const cleanQuery = query.replace(/\s+/g, "").toLowerCase();
+      if (cleanTarget.includes(cleanQuery)) return true;
+      const targetChosung = getChosung(cleanTarget);
+      return targetChosung.includes(cleanQuery);
+    }
+
+    // ==========================================
+    // 2. 기본 내장 데이터셋 (챔피언 20종 & 증강 40종)
+    // ==========================================
+    const GAME_DATA = {
+      "champions": {
+        "ezreal": {
+          "name": "이즈리얼",
+          "role": "원딜 / 포킹",
+          "spells": ["점멸", "회복 또는 총명"],
+          "skillOrder": "Q > E > W",
+          "startItems": ["여신의 눈물", "광휘의 검"],
+          "coreItems": ["마나무네", "삼위일체", "세릴다의 원한"],
+          "recommendAugments": {
+            "mystic_punch": { "tier": "OP", "reason": "Q 적중 시 쿨타임이 대폭 줄어 무한 Q-E 난사가 가능해집니다." },
+            "jeweled_gauntlet": { "tier": "S", "reason": "Q와 궁극기에 치명타가 적용되어 포킹 한 방 위력이 폭증합니다." },
+            "recursion": { "tier": "S", "reason": "스킬 가속 60 추가로 생존기와 포킹 회전율이 극대화됩니다." },
+            "phenomenal_evil": { "tier": "A", "reason": "장거리 Q 견제로 주문력 스택을 매우 빠르게 쌓을 수 있습니다." },
+            "deft": { "tier": "B", "reason": "패시브와 함께 공속을 보충해 줍니다." }
+          }
+        },
+        "lucian": {
+          "name": "루시안",
+          "role": "원딜 / 폭딜",
+          "spells": ["점멸", "유체화 또는 정화"],
+          "skillOrder": "Q > E > W",
+          "startItems": ["절정의 화살", "장화"],
+          "coreItems": ["정수 약탈자", "나보리 명멸검", "도미닉 경의 인사"],
+          "recommendAugments": {
+            "mystic_punch": { "tier": "OP", "reason": "패시브 2연타마다 쿨타임이 초기화되어 무한 대시(E) 콤보가 성립합니다." },
+            "jeweled_gauntlet": { "tier": "OP", "reason": "궁극기(빛의 심판) 전탄에 치명타가 터져 탱커도 순식간에 녹입니다." },
+            "tap_dancer": { "tier": "S", "reason": "패시브 타격으로 공격 속도와 이동 속도가 폭발적으로 상승합니다." },
+            "symphony_of_war": { "tier": "S", "reason": "치명적 속도 + 정복자 동시 적용으로 교전 지속력이 최상급입니다." },
+            "blunt_force": { "tier": "A", "reason": "기본 공격력 15% 증가로 초중반 스노우볼링이 강해집니다." }
+          }
+        },
+        "lux": {
+          "name": "럭스",
+          "role": "메이지 / 포킹",
+          "spells": ["점멸", "총명 또는 방어막"],
+          "skillOrder": "E > Q > W",
+          "startItems": ["사라진 양피지"],
+          "coreItems": ["루덴의 동반자", "지평선의 초점", "라바돈의 죽음모자"],
+          "recommendAugments": {
+            "jeweled_gauntlet": { "tier": "OP", "reason": "E와 궁극기에 치명타가 적용되어 물몸 챔피언을 원콤냅니다." },
+            "phenomenal_evil": { "tier": "OP", "reason": "광역 E 견제로 게임 중반 주문력이 1000을 쉽게 돌파합니다." },
+            "recursion": { "tier": "S", "reason": "궁극기 쿨타임이 10초대까지 줄어 라인 클리어와 견제를 지배합니다." },
+            "eureka": { "tier": "S", "reason": "높은 주문력이 그대로 스킬 가속으로 전환됩니다." },
+            "executioner": { "tier": "A", "reason": "체력이 낮은 적 처치 시 기본 스킬 초기화로 한타 휩쓸기가 가능합니다." }
+          }
+        },
+        "malphite": {
+          "name": "말파이트",
+          "role": "탱커 / 이니시",
+          "spells": ["점멸", "표식(눈덩이)"],
+          "skillOrder": "Q > E > W (AP) / W > E > Q (탱)",
+          "startItems": ["수호자의 뿔피리", "여신의 눈물"],
+          "coreItems": ["태양불꽃 방패", "얼어붙은 심장", "가시 갑옷"],
+          "recommendAugments": {
+            "goliath": { "tier": "OP", "reason": "체력과 방어력 기반 대미지가 함께 증가해 불사신 탱커가 됩니다." },
+            "courage_colossus": { "tier": "S", "reason": "궁극기 진입 직후 막대한 보호막을 얻어 포커싱을 버텨냅니다." },
+            "recursion": { "tier": "S", "reason": "궁극기(멈출 수 없는 힘) 쿨타임을 줄여 한타 주도권을 쥡니다." },
+            "celestial_body": { "tier": "A", "reason": "초반 체력 1250 추가로 다이브 압박력이 크게 올라갑니다." },
+            "jeweled_gauntlet": { "tier": "A", "reason": "AP 말파이트 트리 선택 시 궁극기 한 방 딜이 극대화됩니다." }
+          }
+        },
+        "rumble": {
+          "name": "럼블",
+          "role": "브루저 / 광역 AP",
+          "spells": ["점멸", "표식(눈덩이)"],
+          "skillOrder": "Q > E > W",
+          "startItems": ["방출의 마법봉", "증폭의 고서"],
+          "coreItems": ["리안드리의 고통", "균열 생성기", "존야의 모래시계"],
+          "recommendAugments": {
+            "phenomenal_evil": { "tier": "OP", "reason": "화염방사기(Q)와 이퀄라이저(R) 틱마다 주문력이 기하급수적으로 쌓입니다." },
+            "jeweled_gauntlet": { "tier": "OP", "reason": "이퀄라이저 장판과 과열 Q에 치명타가 적용되어 한타를 지배합니다." },
+            "vulnerability": { "tier": "S", "reason": "리안드리 및 장판 지속 피해에 치명타가 터져 탱커까지 녹입니다." },
+            "eureka": { "tier": "S", "reason": "열 관리와 보호막(W) 회전율을 극한으로 끌어올립니다." },
+            "goliath": { "tier": "A", "reason": "앞라인에서 버티며 지속 화염 딜을 넣기 좋아집니다." }
+          }
+        },
+        "jinx": {
+          "name": "징크스",
+          "role": "원딜 / 하이퍼캐리",
+          "spells": ["점멸", "유체화"],
+          "skillOrder": "Q > W > E",
+          "startItems": ["절정의 화살"],
+          "coreItems": ["크라켄 학살자", "루난의 허리케인", "무한의 대검"],
+          "recommendAugments": {
+            "tap_dancer": { "tier": "OP", "reason": "패시브 발동 시 공속 제한 해제와 함께 화면을 날아다닙니다." },
+            "symphony_of_war": { "tier": "OP", "reason": "로켓(Q) 사거리와 공속 시너지가 완벽하게 맞아떨어집니다." },
+            "scope_weapons": { "tier": "S", "reason": "사거리 증가로 안전한 위치에서 광역 로켓 포격을 가합니다." },
+            "deft": { "tier": "A", "reason": "초반 공속 60%로 라인전 압박력이 크게 상승합니다." },
+            "executioner": { "tier": "A", "reason": "처치 관여 시 덫(E)과 빠직(W) 초기화로 추격전이 매끄럽습니다." }
+          }
+        },
+        "caitlyn": {
+          "name": "케이틀린",
+          "role": "원딜 / 사거리·포킹",
+          "spells": ["점멸", "유체화 또는 정화"],
+          "skillOrder": "Q > W > E",
+          "startItems": ["톱날 단검", "장화"],
+          "coreItems": ["징수의 총", "무한의 대검", "고속 연사포"],
+          "recommendAugments": {
+            "scope_weapons": { "tier": "OP", "reason": "기본 사거리에 추가 사거리가 더해져 타워 밖에서 일방적으로 견제합니다." },
+            "jeweled_gauntlet": { "tier": "OP", "reason": "필트오버 피스메이커(Q)와 비장의 한 발(R)에 치명타가 터집니다." },
+            "tap_dancer": { "tier": "S", "reason": "긴 사거리로 안전하게 이속·공속 스택을 유지할 수 있습니다." },
+            "blunt_force": { "tier": "A", "reason": "헤드샷 계수 효율이 높아 공격력 15% 증가 체감이 큽니다." },
+            "bread_and_jam": { "tier": "A", "reason": "요들잡이 덫(W)을 칼바람 통로 전체에 도배할 수 있습니다." }
+          }
+        },
+        "jhin": {
+          "name": "진",
+          "role": "원딜 / 폭딜·유틸",
+          "spells": ["점멸", "유체화"],
+          "skillOrder": "Q > W > E",
+          "startItems": ["톱날 단검", "장화"],
+          "coreItems": ["징수의 총", "무한의 대검", "고속 연사포"],
+          "recommendAugments": {
+            "jeweled_gauntlet": { "tier": "OP", "reason": "커튼 콜(R) 4타와 춤추는 유탄(Q)에 치명타가 적용되어 압도적 화력을 냅니다." },
+            "blunt_force": { "tier": "OP", "reason": "진 패시브의 공격력 뻥튀기 공식과 곱연산으로 시너지를 냅니다." },
+            "tap_dancer": { "tier": "S", "reason": "치명타 이속 보너스와 합쳐져 슈퍼카 수준의 카이팅이 가능합니다." },
+            "executioner": { "tier": "A", "reason": "4타 처형 딜과 50% 이하 추가 피해의 궁합이 뛰어납니다." },
+            "infernal_soul": { "tier": "B", "reason": "장거리 W 속박과 R 견제에 광역 폭발을 더해줍니다." }
+          }
+        },
+        "kaisa": {
+          "name": "카이사",
+          "role": "원딜 / 하이브리드·포킹",
+          "spells": ["점멸", "유체화 또는 총명"],
+          "skillOrder": "Q > W > E",
+          "startItems": ["사라진 양피지", "증폭의 고서"],
+          "coreItems": ["루덴의 동반자", "마나무네", "그림자불꽃"],
+          "recommendAugments": {
+            "phenomenal_evil": { "tier": "OP", "reason": "공허추적자(W) 포킹만으로 주문력이 끝없이 상승해 W 진화를 조기 달성합니다." },
+            "jeweled_gauntlet": { "tier": "OP", "reason": "장거리 W 포킹과 이케시아 폭우(Q)에 치명타가 적용됩니다." },
+            "bread_and_jam": { "tier": "S", "reason": "W 스킬 가속 200으로 빗나가도 3초마다 W를 난사할 수 있습니다." },
+            "dual_wield": { "tier": "S", "reason": "AD·온힛 트리 선택 시 플라즈마(패시브) 폭발 속도가 2배가 됩니다." },
+            "recursion": { "tier": "A", "reason": "포킹 회전율과 E 은신 생존력을 모두 챙깁니다." }
+          }
+        },
+        "jayce": {
+          "name": "제이스",
+          "role": "브루저 / 포킹",
+          "spells": ["점멸", "총명 또는 표식(눈덩이)"],
+          "skillOrder": "Q > W > E",
+          "startItems": ["여신의 눈물", "톱날 단검"],
+          "coreItems": ["마나무네", "요우무의 유령검", "세릴다의 원한"],
+          "recommendAugments": {
+            "jeweled_gauntlet": { "tier": "OP", "reason": "가속 관문(E)을 통과한 전격 폭발(Q)에 치명타가 터지면 적 딜러가 반피 이상 날아갑니다." },
+            "recursion": { "tier": "OP", "reason": "E-Q 포킹 쿨타임을 대폭 줄여 일방적인 대치 구도를 만듭니다." },
+            "blunt_force": { "tier": "S", "reason": "높은 추가 공격력 계수를 가진 모든 스킬 피해가 강해집니다." },
+            "thread_the_needle": { "tier": "S", "reason": "방어구 관통력 20% 추가로 후반 탱커 상대 포킹 효율을 유지합니다." },
+            "executioner": { "tier": "A", "reason": "해머 폼 진입 후 적 처치 시 탈출 및 추격이 수월해집니다." }
+          }
+        },
+        "nidalee": {
+          "name": "니달리",
+          "role": "메이지 / 포킹·힐",
+          "spells": ["점멸", "총명"],
+          "skillOrder": "Q > E > W",
+          "startItems": ["사라진 양피지"],
+          "coreItems": ["루덴의 동반자", "지평선의 초점", "라바돈의 죽음모자"],
+          "recommendAugments": {
+            "jeweled_gauntlet": { "tier": "OP", "reason": "최대 사거리 창 투척(Q)에 치명타가 적용되어 즉사급 대미지를 줍니다." },
+            "bread_and_butter": { "tier": "OP", "reason": "창 투척(Q) 쿨타임이 1초대로 줄어 끊임없이 창을 던질 수 있습니다." },
+            "phenomenal_evil": { "tier": "S", "reason": "창과 덫 견제로 주문력을 빠르게 누적합니다." },
+            "critical_healing": { "tier": "A", "reason": "태고의 생명력(E) 회복량에 치명타가 터져 유지력을 높입니다." },
+            "witchful_thinking": { "tier": "A", "reason": "초반 주문력 70으로 창 대미지와 힐량을 즉시 끌어올립니다." }
+          }
+        },
+        "xerath": {
+          "name": "제라스",
+          "role": "메이지 / 초장거리 포킹",
+          "spells": ["점멸", "총명 또는 유체화"],
+          "skillOrder": "Q > W > E",
+          "startItems": ["사라진 양피지"],
+          "coreItems": ["루덴의 동반자", "지평선의 초점", "라바돈의 죽음모자"],
+          "recommendAugments": {
+            "phenomenal_evil": { "tier": "OP", "reason": "화면 밖에서 쏘는 Q·W·R 적중마다 주문력이 무한히 쌓입니다." },
+            "jeweled_gauntlet": { "tier": "OP", "reason": "비전 의식(R) 포격과 Q에 치명타가 터져 원거리에서 암살이 가능합니다." },
+            "eureka": { "tier": "S", "reason": "누적된 주문력이 스킬 가속으로 전환되어 포킹 빈도가 폭증합니다." },
+            "recursion": { "tier": "S", "reason": "스킬 쿨타임을 줄여 미니언 정리와 견제를 동시에 수행합니다." },
+            "witchful_thinking": { "tier": "A", "reason": "초반 라인전 포킹 압박력을 크게 높여줍니다." }
+          }
+        },
+        "brand": {
+          "name": "브랜드",
+          "role": "메이지 / 광역 지속딜",
+          "spells": ["점멸", "유체화 또는 탈진"],
+          "skillOrder": "W > E > Q",
+          "startItems": ["사라진 양피지"],
+          "coreItems": ["리안드리의 고통", "라일라이의 수정홀", "존야의 모래시계"],
+          "recommendAugments": {
+            "phenomenal_evil": { "tier": "OP", "reason": "패시브 불길 틱마다 주문력이 중첩되어 한타 한 번에 주문력이 수백씩 오릅니다." },
+            "vulnerability": { "tier": "OP", "reason": "패시브 화상과 리안드리 지속 피해에 모두 치명타가 적용됩니다." },
+            "jeweled_gauntlet": { "tier": "S", "reason": "파멸의 불덩이(R) 튕김 피해에 치명타가 터져 5인을 동시에 삭제합니다." },
+            "ice_cold": { "tier": "A", "reason": "라일라이와 결합해 적 전체를 제자리걸음 수준으로 느리게 만듭니다." },
+            "recursion": { "tier": "A", "reason": "스킬 콤보 회전율을 높여 패시브 3스택 폭발을 자주 터뜨립니다." }
+          }
+        },
+        "veigar": {
+          "name": "베이가",
+          "role": "메이지 / 성장형 누커",
+          "spells": ["점멸", "유체화"],
+          "skillOrder": "Q > W > E",
+          "startItems": ["여신의 눈물", "사라진 양피지"],
+          "coreItems": ["영겁의 지팡이", "대천사의 포옹", "라바돈의 죽음모자"],
+          "recommendAugments": {
+            "eureka": { "tier": "OP", "reason": "패시브로 쌓인 막대한 주문력이 스킬 가속으로 전환되어 사건의 지평선(E)을 무한 설치합니다." },
+            "bread_and_cheese": { "tier": "OP", "reason": "광역 기절 장벽(E)의 스킬 가속이 200 증가해 상대 근접 챔피언을 봉인합니다." },
+            "jeweled_gauntlet": { "tier": "S", "reason": "흑물질(W)과 태초의 폭발(R)에 치명타가 적용됩니다." },
+            "phenomenal_evil": { "tier": "S", "reason": "기본 패시브에 더해 주문력 성장 속도가 2배로 빨라집니다." },
+            "goliath": { "tier": "A", "reason": "체력 35%와 주문력 15% 증폭으로 탱킹과 화력을 동시에 얻습니다." }
+          }
+        },
+        "morgana": {
+          "name": "모르가나",
+          "role": "메이지 / 속박·유틸",
+          "spells": ["점멸", "총명 또는 표식(눈덩이)"],
+          "skillOrder": "W > Q > E",
+          "startItems": ["사라진 양피지"],
+          "coreItems": ["리안드리의 고통", "존야의 모래시계", "라일라이의 수정홀"],
+          "recommendAugments": {
+            "phenomenal_evil": { "tier": "OP", "reason": "고통의 그림자(W) 장판 틱마다 주문력이 쌓여 후반 왕귀력이 엄청납니다." },
+            "bread_and_butter": { "tier": "OP", "reason": "어둠의 속박(Q) 쿨타임이 대폭 줄어 무한 속박 지옥을 만듭니다." },
+            "vulnerability": { "tier": "S", "reason": "W 장판과 리안드리 도트 딜에 치명타가 적용됩니다." },
+            "recursion": { "tier": "S", "reason": "칠흑의 방패(E)와 Q 쿨타임을 줄여 아군 보호 능력이 급상승합니다." },
+            "tormentor": { "tier": "A", "reason": "Q 속박 및 궁극기 기절 적중 시 최대 체력 비례 화상을 입힙니다." }
+          }
+        },
+        "thresh": {
+          "name": "쓰레쉬",
+          "role": "탱커 / 그랩·유틸",
+          "spells": ["점멸", "표식(눈덩이)"],
+          "skillOrder": "Q > E > W",
+          "startItems": ["수호자의 뿔피리"],
+          "coreItems": ["강철의 솔라리 펜던트", "기사의 맹세", "가시 갑옷"],
+          "recommendAugments": {
+            "bread_and_butter": { "tier": "OP", "reason": "사형 선고(Q) 적중 시 쿨타임 감소와 합쳐져 1초마다 그랩을 던집니다." },
+            "courage_colossus": { "tier": "OP", "reason": "Q·E·R 모든 스킬이 이동 불가 판정이라 교전 내내 보호막이 끊이지 않습니다." },
+            "goliath": { "tier": "S", "reason": "영혼 수확 방어력·주문력에 체력 35% 증폭이 더해져 레이드 보스가 됩니다." },
+            "tormentor": { "tier": "S", "reason": "연속 CC기 적중 시 퍼센트 화상 대미지로 딜 기여도가 높습니다." },
+            "celestial_body": { "tier": "A", "reason": "초반 탱킹력을 확보해 공격적인 눈덩이 진입이 가능해집니다." }
+          }
+        },
+        "blitzcrank": {
+          "name": "블리츠크랭크",
+          "role": "탱커 / 그랩",
+          "spells": ["점멸", "표식(눈덩이)"],
+          "skillOrder": "Q > E > W",
+          "startItems": ["수호자의 뿔피리", "여신의 눈물"],
+          "coreItems": ["종말의 겨울", "얼어붙은 심장", "대자연의 힘"],
+          "recommendAugments": {
+            "bread_and_butter": { "tier": "OP", "reason": "로켓 손(Q) 쿨타임이 수 초대로 줄어 칼바람 최고의 공포가 됩니다." },
+            "courage_colossus": { "tier": "S", "reason": "그랩(Q)과 강철 주먹(E) 연계 시 막대한 보호막을 얻습니다." },
+            "recursion": { "tier": "S", "reason": "그랩과 광역 침묵 궁극기 회전율을 높여줍니다." },
+            "tormentor": { "tier": "A", "reason": "Q-E-R 콤보 동안 상대에게 퍼센트 체력 피해를 입힙니다." },
+            "celestial_body": { "tier": "A", "reason": "그랩 후 역습을 버텨낼 수 있는 기초 체력을 제공합니다." }
+          }
+        },
+        "leona": {
+          "name": "레오나",
+          "role": "탱커 / 하드 CC",
+          "spells": ["점멸", "표식(눈덩이)"],
+          "skillOrder": "W > E > Q",
+          "startItems": ["수호자의 뿔피리"],
+          "coreItems": ["태양불꽃 방패", "가시 갑옷", "끝없는 절망"],
+          "recommendAugments": {
+            "courage_colossus": { "tier": "OP", "reason": "Q·E·R 모두 하드 CC기여서 쿨마다 거대한 보호막이 생성됩니다." },
+            "goliath": { "tier": "OP", "reason": "일식(W) 방마저 뻥튀기와 체력 35% 증가가 합쳐져 죽지 않는 탱커가 됩니다." },
+            "tormentor": { "tier": "S", "reason": "긴 CC 연계 시간 동안 최대 체력 비례 마법 피해가 계속 들어갑니다." },
+            "recursion": { "tier": "S", "reason": "여명의 방패(Q) 쿨타임이 2초대로 줄어 한 명을 영구 기절시킵니다." },
+            "celestial_body": { "tier": "A", "reason": "초반 다이브 싸움에서 압도적인 맷집을 발휘합니다." }
+          }
+        },
+        "darius": {
+          "name": "다리우스",
+          "role": "브루저 / 근접 캐리",
+          "spells": ["점멸", "유체화 또는 표식(눈덩이)"],
+          "skillOrder": "Q > E > W",
+          "startItems": ["수호자의 뿔피리", "장화"],
+          "coreItems": ["발걸음 분쇄기", "스테락의 도전", "망자의 갑옷"],
+          "recommendAugments": {
+            "goliath": { "tier": "OP", "reason": "체력 35%와 공격력 15% 증가로 5스택 녹서스의 힘 위력이 극대화됩니다." },
+            "earthwake": { "tier": "S", "reason": "유체화·점멸·눈덩이 진입 시 광역 균열 폭발로 적 진영을 붕괴시킵니다." },
+            "blade_waltz": { "tier": "S", "reason": "대상 지정 불가 상태로 적진에 파고들어 순식간에 출혈 스택을 쌓습니다." },
+            "celestial_body": { "tier": "A", "reason": "출혈 5스택을 쌓을 때까지 버텨주는 핵심 생존력을 제공합니다." },
+            "courage_colossus": { "tier": "A", "reason": "포획(E) 적중 시 보호막을 얻어 근접 난전에 강해집니다." }
+          }
+        },
+        "katarina": {
+          "name": "카타리나",
+          "role": "암살자 / 한타 초기화",
+          "spells": ["점멸", "표식(눈덩이)"],
+          "skillOrder": "Q > E > W",
+          "startItems": ["방출의 마법봉", "증폭의 고서"],
+          "coreItems": ["내셔의 이빨", "그림자불꽃", "존야의 모래시계"],
+          "recommendAugments": {
+            "jeweled_gauntlet": { "tier": "OP", "reason": "단검 줍기(패시브)와 죽음의 연꽃(R)에 치명타가 터져 펜타킬 각을 만듭니다." },
+            "blade_waltz": { "tier": "OP", "reason": "적의 핵심 CC기를 회피하면서 적진 한가운데로 안전하게 진입합니다." },
+            "ethereal_weapon": { "tier": "S", "reason": "모든 스킬과 단검 피해에 내셔·몰왕 온힛 효과가 발동해 폭딜이 폭발합니다." },
+            "executioner": { "tier": "S", "reason": "기본 초기화 패시브에 체력 50% 이하 추가 피해까지 더해져 처형 능력이 극대화됩니다." },
+            "earthwake": { "tier": "A", "reason": "순보(E)를 탈 때마다 바닥에 폭발 균열이 생겨 광역 딜이 추가됩니다." }
+          }
+        }
+      },
+      "augments": {
+        "mystic_punch": {
+          "name": "신비한 주먹",
+          "tier": "prismatic",
+          "tags": ["쿨감", "온힛"],
+          "desc": "기본 공격 적중 시 모든 스킬의 남은 재사용 대기시간이 1.25초 감소합니다."
+        },
+        "jeweled_gauntlet": {
+          "name": "보석 건틀릿",
+          "tier": "prismatic",
+          "tags": ["치명타", "주문력"],
+          "desc": "스킬에 치명타가 적용될 수 있으며 치명타 확률이 25% 증가합니다."
+        },
+        "tap_dancer": {
+          "name": "탭 댄서",
+          "tier": "prismatic",
+          "tags": ["공속", "기동력"],
+          "desc": "기본 공격 시 이동 속도가 중첩되며, 추가 이동 속도에 비례해 공격 속도를 얻습니다."
+        },
+        "symphony_of_war": {
+          "name": "전쟁의 교향곡",
+          "tier": "prismatic",
+          "tags": ["공속", "온힛"],
+          "desc": "치명적 속도 및 정복자 핵심 룬을 모두 획득합니다."
+        },
+        "goliath": {
+          "name": "거인",
+          "tier": "prismatic",
+          "tags": ["체력", "주문력"],
+          "desc": "크기가 커지고 체력이 35%, 적응형 능력치가 15% 증가합니다."
+        },
+        "eureka": {
+          "name": "유레카",
+          "tier": "prismatic",
+          "tags": ["쿨감", "주문력"],
+          "desc": "주문력의 25%에 해당하는 스킬 가속을 얻습니다."
+        },
+        "blade_waltz": {
+          "name": "검의 왈츠",
+          "tier": "prismatic",
+          "tags": ["물리", "기동력"],
+          "desc": "대상 지정 불가 상태로 돌진해 적을 빠르게 8회 베어 물리 피해를 입히는 소환사 주문을 얻습니다."
+        },
+        "draw_your_sword": {
+          "name": "검을 뽑아라",
+          "tier": "prismatic",
+          "tags": ["공속", "체력"],
+          "desc": "근접 챔피언이 되며 공격력, 체력, 공격 속도, 흡혈, 이동 속도가 대폭 증가합니다."
+        },
+        "dual_wield": {
+          "name": "쌍수 무기",
+          "tier": "prismatic",
+          "tags": ["공속", "온힛"],
+          "desc": "공격 속도가 크게 증가하고 기본 공격 시 적중 시 효과를 두 번 발동하지만 피해량이 일부 감소합니다."
+        },
+        "mad_scientist": {
+          "name": "미치광이 과학자",
+          "tier": "prismatic",
+          "tags": ["쿨감", "기동력"],
+          "desc": "크기가 작아지고 이동 속도와 스킬 가속이 대폭 증가합니다."
+        },
+        "omnivamp_soul": {
+          "name": "모든 영혼",
+          "tier": "prismatic",
+          "tags": ["유틸", "체력"],
+          "desc": "화염, 바다, 바람, 대지, 마법공학, 화학공학 드래곤 영혼을 모두 획득합니다."
+        },
+        "earthwake": {
+          "name": "지진파",
+          "tier": "prismatic",
+          "tags": ["물리", "기동력"],
+          "desc": "돌진, 점멸, 순간이동 사용 시 지나간 자리에 폭발하는 균열을 남겨 광역 피해를 입힙니다."
+        },
+        "back_to_basics": {
+          "name": "기본으로 돌아가기",
+          "tier": "prismatic",
+          "tags": ["주문력", "물리"],
+          "desc": "궁극기를 사용할 수 없게 되는 대신 일반 스킬 피해량, 회복량, 보호막 및 스킬 가속이 대폭 증가합니다."
+        },
+        "master_of_duality": {
+          "name": "이중성의 대가",
+          "tier": "prismatic",
+          "tags": ["주문력", "물리"],
+          "desc": "기본 공격 시 주문력이, 스킬 사용 시 공격력이 전투 종료 시까지 중첩되어 증가합니다."
+        },
+        "recursion": {
+          "name": "재귀",
+          "tier": "gold",
+          "tags": ["쿨감"],
+          "desc": "스킬 가속이 60 증가합니다."
+        },
+        "phenomenal_evil": {
+          "name": "경이로운 악",
+          "tier": "gold",
+          "tags": ["주문력"],
+          "desc": "스킬로 적 챔피언에게 피해를 입힐 때마다 주문력이 영구적으로 1 증가합니다."
+        },
+        "scope_weapons": {
+          "name": "조준경 무기",
+          "tier": "gold",
+          "tags": ["공속", "온힛"],
+          "desc": "기본 공격 사거리가 원거리 75, 근거리 150 증가합니다."
+        },
+        "celestial_body": {
+          "name": "천상의 신체",
+          "tier": "gold",
+          "tags": ["체력"],
+          "desc": "체력이 1250 증가하지만 입히는 피해량이 10% 감소합니다."
+        },
+        "ethereal_weapon": {
+          "name": "에테르 무기",
+          "tier": "gold",
+          "tags": ["온힛", "주문력"],
+          "desc": "스킬이 적중 시 효과(온힛)를 발동시킵니다."
+        },
+        "thread_the_needle": {
+          "name": "바늘구멍 꿰기",
+          "tier": "gold",
+          "tags": ["물리", "주문력"],
+          "desc": "방어구 관통력과 마법 관통력이 20% 증가합니다."
+        },
+        "critical_healing": {
+          "name": "치명적인 회복",
+          "tier": "gold",
+          "tags": ["치명타", "유틸"],
+          "desc": "회복 및 보호막에 치명타가 적용될 수 있으며 치명타 확률이 25% 증가합니다."
+        },
+        "bread_and_butter": {
+          "name": "빵과 버터",
+          "tier": "gold",
+          "tags": ["쿨감"],
+          "desc": "Q 스킬의 스킬 가속이 200 증가합니다."
+        },
+        "bread_and_jam": {
+          "name": "빵과 잼",
+          "tier": "gold",
+          "tags": ["쿨감"],
+          "desc": "W 스킬의 스킬 가속이 200 증가합니다."
+        },
+        "bread_and_cheese": {
+          "name": "빵과 치즈",
+          "tier": "gold",
+          "tags": ["쿨감"],
+          "desc": "E 스킬의 스킬 가속이 200 증가합니다."
+        },
+        "willing_sacrifice": {
+          "name": "기꺼이 희생",
+          "tier": "gold",
+          "tags": ["체력", "유틸"],
+          "desc": "아군 체력이 일정 수준 이하로 떨어지면 자신의 체력을 소모해 아군에게 강력한 보호막을 부여합니다."
+        },
+        "marksmage": {
+          "name": "명사수 마법사",
+          "tier": "gold",
+          "tags": ["주문력", "온힛"],
+          "desc": "기본 공격 시 주문력의 100%만큼 추가 물리 피해를 입힙니다."
+        },
+        "vulnerability": {
+          "name": "취약점",
+          "tier": "gold",
+          "tags": ["치명타", "온힛"],
+          "desc": "아이템 및 지속 피해(도트) 효과에 치명타가 적용될 수 있으며 치명타 확률이 25% 증가합니다."
+        },
+        "heavy_hitter": {
+          "name": "강타자",
+          "tier": "gold",
+          "tags": ["체력", "온힛"],
+          "desc": "기본 공격 시 자신의 최대 체력의 일정 비율만큼 추가 물리 피해를 입힙니다."
+        },
+        "executioner": {
+          "name": "처형인",
+          "tier": "silver",
+          "tags": ["기동력", "쿨감"],
+          "desc": "체력이 50% 이하인 적에게 추가 피해를 입히고 처치 관여 시 기본 스킬이 초기화됩니다."
+        },
+        "deft": {
+          "name": "능숙함",
+          "tier": "silver",
+          "tags": ["공속"],
+          "desc": "공격 속도가 60% 증가합니다."
+        },
+        "courage_colossus": {
+          "name": "거상의 용기",
+          "tier": "silver",
+          "tags": ["체력"],
+          "desc": "적 챔피언을 이동 불가 상태로 만들면 최대 체력 비례 보호막을 획득합니다."
+        },
+        "witchful_thinking": {
+          "name": "마녀의 발상",
+          "tier": "silver",
+          "tags": ["주문력"],
+          "desc": "주문력이 70 증가합니다."
+        },
+        "blunt_force": {
+          "name": "둔기 타격",
+          "tier": "silver",
+          "tags": ["물리"],
+          "desc": "공격력이 15% 증가합니다."
+        },
+        "first_aid_kit": {
+          "name": "구급상자",
+          "tier": "silver",
+          "tags": ["유틸"],
+          "desc": "체력 회복 및 보호막 효과가 20% 증가합니다."
+        },
+        "ocean_soul": {
+          "name": "바다의 영혼",
+          "tier": "silver",
+          "tags": ["유틸", "체력"],
+          "desc": "적에게 피해를 입히면 체력과 마나를 지속적으로 회복하는 바다 드래곤 영혼을 얻습니다."
+        },
+        "infernal_soul": {
+          "name": "화염의 영혼",
+          "tier": "silver",
+          "tags": ["주문력", "물리"],
+          "desc": "기본 공격 및 스킬 적중 시 광역 폭발 피해를 입히는 화염 드래곤 영혼을 얻습니다."
+        },
+        "ice_cold": {
+          "name": "냉혹함",
+          "tier": "silver",
+          "tags": ["유틸", "주문력"],
+          "desc": "둔화 효과가 추가로 적을 더 느리게 만듭니다."
+        },
+        "tormentor": {
+          "name": "고문자",
+          "tier": "silver",
+          "tags": ["체력", "주문력"],
+          "desc": "적을 이동 불가 상태로 만들면 최대 체력 비례 마법 피해를 입히는 화상을 적용합니다."
+        },
+        "erosion": {
+          "name": "침식",
+          "tier": "silver",
+          "tags": ["온힛", "물리"],
+          "desc": "적에게 피해를 입힐 때마다 대상의 방어력과 마법 저항력을 중첩해서 깎습니다."
+        },
+        "light_em_up": {
+          "name": "불을 밝혀라",
+          "tier": "silver",
+          "tags": ["공속", "온힛"],
+          "desc": "4번째 기본 공격마다 추가 마법 피해를 입히고 폭발을 일으킵니다."
+        }
+      }
+    };
+
+    // ==========================================
+    // 3. 애플리케이션 상태 관리
+    // ==========================================
+    let selectedChampId = "ezreal";
+    let ownedAugments = [null, null, null, null];
+    let choiceSlots = [null, null, null];
+    let pickerTarget = { type: "choice", index: 0 };
+    let currentTierFilter = "all";
+    let cameraStream = null;
+    let currentPatchLabel = "";
+
+    // ==========================================
+    // 4. UI 렌더링 함수들
+    // ==========================================
+    function updateDatasetBadge() {
+      const champCount = Object.keys(GAME_DATA.champions).length;
+      const augCount = Object.keys(GAME_DATA.augments).length;
+      const badge = document.getElementById("datasetBadge");
+      if (badge) {
+        const prefix = currentPatchLabel ? `패치 ${currentPatchLabel} · ` : "";
+        badge.textContent = `${prefix}챔피언 ${champCount}종 · 증강 ${augCount}종`;
+      }
+    }
+
+    function renderChampionList() {
+      const query = document.getElementById("champSearchInput").value.trim();
+      const container = document.getElementById("championChips");
+      container.innerHTML = "";
+
+      const entries = Object.entries(GAME_DATA.champions).filter(([id, champ]) =>
+        matchKoreanQuery(champ.name, query) || matchKoreanQuery(champ.role, query)
+      );
+
+      if (entries.length === 0) {
+        container.innerHTML = `<span class="text-xs text-slate-500 py-1">검색 결과가 없습니다.</span>`;
+        return;
+      }
+
+      entries.forEach(([id, champ]) => {
+        const isSelected = id === selectedChampId;
+        const btn = document.createElement("button");
+        btn.className = `px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition border ${
+          isSelected
+            ? "bg-amber-500 text-slate-950 border-amber-400 shadow-md shadow-amber-500/20"
+            : "bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-700"
+        }`;
+        btn.textContent = champ.name;
+        btn.onclick = () => {
+          selectedChampId = id;
+          renderAll();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function clearChampSearch() {
+      document.getElementById("champSearchInput").value = "";
+      renderChampionList();
+    }
+
+    function renderChampionBuild() {
+      const champ = GAME_DATA.champions[selectedChampId];
+      if (!champ) return;
+      const box = document.getElementById("championBuildCard");
+      box.innerHTML = `
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="text-base font-extrabold text-white">${champ.name}</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300">${champ.role}</span>
+          </div>
+          <p class="text-xs text-slate-400">스펠: <span class="text-slate-200 font-medium">${champ.spells.join(", ")}</span></p>
+          <p class="text-xs text-slate-400">스킬 선마: <span class="text-amber-400 font-bold">${champ.skillOrder}</span></p>
+        </div>
+        <div class="space-y-1">
+          <span class="text-xs font-semibold text-slate-400">시작 아이템</span>
+          <div class="flex flex-wrap gap-1.5">
+            ${champ.startItems.map(i => `<span class="px-2 py-1 rounded bg-slate-900 border border-slate-700 text-xs text-slate-200">${i}</span>`).join("")}
+          </div>
+        </div>
+        <div class="space-y-1">
+          <span class="text-xs font-semibold text-slate-400">핵심 3코어 빌드</span>
+          <div class="flex flex-wrap gap-1.5">
+            ${champ.coreItems.map((i, idx) => `<span class="px-2 py-1 rounded bg-indigo-950/60 border border-indigo-500/30 text-xs text-indigo-200 font-medium">${idx + 1}. ${i}</span>`).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function getTierLabel(tier) {
+      if (tier === "prismatic") return { text: "프리즘", cls: "text-purple-300 bg-purple-950/80 border-purple-500/40" };
+      if (tier === "gold") return { text: "골드", cls: "text-amber-300 bg-amber-950/80 border-amber-500/40" };
+      return { text: "실버", cls: "text-slate-300 bg-slate-800 border-slate-600" };
+    }
+
+    function renderOwnedAugments() {
+      const grid = document.getElementById("ownedAugmentsGrid");
+      grid.innerHTML = "";
+
+      ownedAugments.forEach((augId, idx) => {
+        const card = document.createElement("div");
+        if (!augId || !GAME_DATA.augments[augId]) {
+          card.className = "border border-dashed border-slate-700 hover:border-slate-500 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer min-h-[76px] transition bg-slate-950/40";
+          card.innerHTML = `<span class="text-xs text-slate-500">+ ${idx + 1}라운드 증강</span>`;
+          card.onclick = () => openPickerModal("owned", idx);
+        } else {
+          const aug = GAME_DATA.augments[augId];
+          const t = getTierLabel(aug.tier);
+          card.className = `border rounded-xl p-2.5 bg-slate-950 flex flex-col justify-between min-h-[76px] aug-${aug.tier}`;
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-1">
+              <span class="text-xs font-bold text-white leading-tight">${aug.name}</span>
+              <button onclick="removeOwnedAugment(${idx})" class="text-[11px] text-slate-500 hover:text-rose-400">✕</button>
+            </div>
+            <div class="flex items-center justify-between mt-2">
+              <span class="text-[10px] px-1.5 py-0.5 rounded border ${t.cls}">${t.text}</span>
+              <span class="text-[10px] text-slate-400">${aug.tags.join(" · ")}</span>
+            </div>
+          `;
+        }
+        grid.appendChild(card);
+      });
+
+      renderSynergyBar();
+    }
+
+    function renderSynergyBar() {
+      const bar = document.getElementById("activeSynergyBar");
+      const tagCounts = {};
+      ownedAugments.filter(id => id && GAME_DATA.augments[id]).forEach(id => {
+        GAME_DATA.augments[id].tags.forEach(tag => {
+          tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+        });
+      });
+
+      const entries = Object.entries(tagCounts);
+      if (entries.length === 0) {
+        bar.innerHTML = `<span class="text-slate-500">활성 시너지 없음 (보유 증강을 추가하면 태그 시너지가 집계됩니다)</span>`;
+        return;
+      }
+
+      bar.innerHTML = `<span class="text-slate-400 font-semibold">보유 태그:</span>` +
+        entries.map(([tag, cnt]) => `
+          <span class="px-2 py-0.5 rounded-full ${cnt >= 2 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold" : "bg-slate-800 text-slate-300"}">
+            #${tag} x${cnt} ${cnt >= 2 ? "(시너지 활성)" : ""}
+          </span>
+        `).join("");
+    }
+
+    function removeOwnedAugment(idx) {
+      ownedAugments[idx] = null;
+      renderAll();
+    }
+
+    function resetOwnedAugments() {
+      ownedAugments = [null, null, null, null];
+      renderAll();
+    }
+
+    function evaluateAugmentForChamp(augId) {
+      const champ = GAME_DATA.champions[selectedChampId];
+      const aug = GAME_DATA.augments[augId];
+      const baseRec = (champ && champ.recommendAugments && champ.recommendAugments[augId]) || {
+        tier: "B",
+        reason: "무난하게 활용 가능하지만 핵심 시너지 증강보다는 우선순위가 낮습니다."
+      };
+
+      const ownedTags = new Set();
+      ownedAugments.filter(id => id && GAME_DATA.augments[id]).forEach(id => {
+        GAME_DATA.augments[id].tags.forEach(t => ownedTags.add(t));
+      });
+      const matchedTags = aug.tags.filter(t => ownedTags.has(t));
+
+      return {
+        tier: baseRec.tier,
+        reason: baseRec.reason,
+        synergyTags: matchedTags
+      };
+    }
+
+    function renderChoiceSlots() {
+      const grid = document.getElementById("choiceSlotsGrid");
+      grid.innerHTML = "";
+
+      choiceSlots.forEach((augId, idx) => {
+        const card = document.createElement("div");
+        if (!augId || !GAME_DATA.augments[augId]) {
+          card.className = "border-2 border-dashed border-slate-700 hover:border-amber-400/60 rounded-2xl p-5 flex flex-col items-center justify-center text-center cursor-pointer min-h-[210px] bg-slate-950/50 transition space-y-2";
+          card.onclick = () => openPickerModal("choice", idx);
+          card.innerHTML = `
+            <span class="w-8 h-8 rounded-full bg-slate-800 text-amber-400 flex items-center justify-center font-bold text-sm">${idx + 1}</span>
+            <p class="text-sm font-bold text-slate-300">${idx + 1}번 증강 선택하기</p>
+            <p class="text-xs text-slate-500">클릭해서 초성 검색 또는 등급 필터</p>
+          `;
+        } else {
+          const aug = GAME_DATA.augments[augId];
+          const t = getTierLabel(aug.tier);
+          const evalInfo = evaluateAugmentForChamp(augId);
+
+          card.className = `border-2 rounded-2xl p-4 bg-slate-950 flex flex-col justify-between min-h-[210px] aug-${aug.tier}`;
+          card.innerHTML = `
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold tier-${evalInfo.tier}">${evalInfo.tier} 티어</span>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[11px] px-2 py-0.5 rounded border ${t.cls}">${t.text}</span>
+                  <button onclick="openPickerModal('choice', ${idx})" class="text-xs text-slate-400 hover:text-white underline">변경</button>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="text-base font-extrabold text-white">${aug.name}</h3>
+                <p class="text-xs text-slate-400 mt-1 leading-relaxed">${aug.desc}</p>
+              </div>
+
+              ${
+                evalInfo.synergyTags.length > 0
+                  ? `<div class="px-2.5 py-1.5 rounded-lg bg-emerald-950/70 border border-emerald-500/40 text-xs text-emerald-300 font-semibold">
+                      ⚡ 보유 증강 시너지: ${evalInfo.synergyTags.map(tag => "#" + tag).join(", ")}
+                    </div>`
+                  : ""
+              }
+
+              <div class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 leading-relaxed">
+                💡 <span class="font-semibold text-amber-300">추천 이유:</span> ${evalInfo.reason}
+              </div>
+            </div>
+
+            <button onclick="pickAugmentToOwned('${augId}')" class="mt-3 w-full py-2 rounded-xl bg-slate-800 hover:bg-emerald-600 text-white font-bold text-xs transition">
+              ✓ 이 증강 선택 (보유 슬롯 등록)
+            </button>
+          `;
+        }
+        grid.appendChild(card);
+      });
+    }
+
+    function pickAugmentToOwned(augId) {
+      const emptyIdx = ownedAugments.findIndex(v => v === null);
+      if (emptyIdx === -1) {
+        alert("보유 증강 4칸이 모두 찼습니다. 상단 슬롯에서 하나를 비운 뒤 추가해 주세요.");
+        return;
+      }
+      ownedAugments[emptyIdx] = augId;
+      choiceSlots = [null, null, null];
+      renderAll();
+    }
+
+    function loadSampleChoices() {
+      const champ = GAME_DATA.champions[selectedChampId];
+      const recKeys = champ && champ.recommendAugments ? Object.keys(champ.recommendAugments) : [];
+      const fallbackKeys = Object.keys(GAME_DATA.augments).slice(0, 3);
+      const picked = [
+        recKeys[0] || fallbackKeys[0],
+        recKeys[1] || fallbackKeys[1],
+        recKeys[2] || fallbackKeys[2]
+      ];
+      choiceSlots = picked;
+      renderChoiceSlots();
+    }
+
+    function renderCheatSheet() {
+      const champ = GAME_DATA.champions[selectedChampId];
+      const list = document.getElementById("cheatSheetList");
+      list.innerHTML = "";
+      if (!champ || !champ.recommendAugments) return;
+
+      const tierRank = { OP: 1, S: 2, A: 3, B: 4 };
+      const sorted = Object.entries(champ.recommendAugments)
+        .filter(([augId]) => GAME_DATA.augments[augId])
+        .sort((a, b) => (tierRank[a[1].tier] || 9) - (tierRank[b[1].tier] || 9))
+        .slice(0, 12);
+
+      sorted.forEach(([augId, info]) => {
+        const aug = GAME_DATA.augments[augId];
+        const t = getTierLabel(aug.tier);
+        const item = document.createElement("div");
+        item.className = "p-3 rounded-xl bg-slate-950 border border-slate-800 hover:border-amber-400/50 cursor-pointer transition flex items-start justify-between gap-3";
+        item.onclick = () => {
+          const emptyChoice = choiceSlots.findIndex(v => v === null);
+          const targetIdx = emptyChoice !== -1 ? emptyChoice : 0;
+          choiceSlots[targetIdx] = augId;
+          renderChoiceSlots();
+        };
+        item.innerHTML = `
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[11px] font-extrabold tier-${info.tier}">${info.tier}</span>
+              <span class="text-sm font-bold text-white">${aug.name}</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded border ${t.cls}">${t.text}</span>
+            </div>
+            <p class="text-xs text-slate-400">${info.reason}</p>
+          </div>
+          <span class="text-xs text-amber-400 font-bold shrink-0">+ 담기</span>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // ==========================================
+    // 5. 증강 수동 선택 모달 로직
+    // ==========================================
+    function openPickerModal(type, index) {
+      pickerTarget = { type, index };
+      currentTierFilter = "all";
+      document.getElementById("augmentSearchInput").value = "";
+      document.getElementById("pickerModalTitle").textContent =
+        type === "choice" ? `${index + 1}번 슬롯 증강 선택` : `${index + 1}라운드 보유 증강 선택`;
+      updateTierFilterButtons();
+      renderAugmentPickerList();
+      document.getElementById("augmentPickerModal").classList.remove("hidden");
+      setTimeout(() => document.getElementById("augmentSearchInput").focus(), 50);
+    }
+
+    function closePickerModal() {
+      document.getElementById("augmentPickerModal").classList.add("hidden");
+    }
+
+    function setTierFilter(tier) {
+      currentTierFilter = tier;
+      updateTierFilterButtons();
+      renderAugmentPickerList();
+    }
+
+    function updateTierFilterButtons() {
+      const allAugs = Object.values(GAME_DATA.augments);
+      const counts = {
+        all: allAugs.length,
+        prismatic: allAugs.filter(a => a.tier === "prismatic").length,
+        gold: allAugs.filter(a => a.tier === "gold").length,
+        silver: allAugs.filter(a => a.tier === "silver").length
+      };
+      const labels = {
+        all: `전체 (${counts.all})`,
+        prismatic: `프리즘 (${counts.prismatic})`,
+        gold: `골드 (${counts.gold})`,
+        silver: `실버 (${counts.silver})`
+      };
+
+      ["all", "prismatic", "gold", "silver"].forEach(t => {
+        const btn = document.getElementById(`filter-${t}`);
+        btn.textContent = labels[t];
+        if (t === currentTierFilter) {
+          btn.className = "tier-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold bg-amber-500 text-slate-950";
+        } else {
+          btn.className = "tier-filter-btn flex-1 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700";
+        }
+      });
+    }
+
+    function renderAugmentPickerList() {
+      const query = document.getElementById("augmentSearchInput").value.trim();
+      const list = document.getElementById("augmentPickerList");
+      list.innerHTML = "";
+
+      const entries = Object.entries(GAME_DATA.augments).filter(([id, aug]) => {
+        const tierOk = currentTierFilter === "all" || aug.tier === currentTierFilter;
+        const textOk = matchKoreanQuery(aug.name, query) || aug.tags.some(t => matchKoreanQuery(t, query));
+        return tierOk && textOk;
+      });
+
+      if (entries.length === 0) {
+        list.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">일치하는 증강이 없습니다.</p>`;
+        return;
+      }
+
+      entries.forEach(([id, aug]) => {
+        const t = getTierLabel(aug.tier);
+        const evalInfo = evaluateAugmentForChamp(id);
+        const row = document.createElement("button");
+        row.className = "w-full text-left p-3 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 flex items-center justify-between gap-2 transition";
+        row.onclick = () => {
+          if (pickerTarget.type === "choice") {
+            choiceSlots[pickerTarget.index] = id;
+          } else {
+            ownedAugments[pickerTarget.index] = id;
+          }
+          closePickerModal();
+          renderAll();
+        };
+        row.innerHTML = `
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold tier-${evalInfo.tier}">${evalInfo.tier}</span>
+              <span class="text-sm font-bold text-white">${aug.name}</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded border ${t.cls}">${t.text}</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1 line-clamp-1">${aug.desc}</p>
+          </div>
+          <span class="text-xs text-slate-500 shrink-0">${aug.tags.join("·")}</span>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    // ==========================================
+    // 6. 카메라 OCR & 유사도 매칭 로직
+    // ==========================================
+    async function openScannerModal() {
+      document.getElementById("scannerModal").classList.remove("hidden");
+      document.getElementById("ocrStatusBox").classList.add("hidden");
+      document.getElementById("previewCanvas").classList.add("hidden");
+      document.getElementById("cameraVideo").classList.remove("hidden");
+      document.getElementById("guideOverlay").classList.remove("hidden");
+      document.getElementById("cameraFallbackMsg").classList.add("hidden");
+
+      try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error("MediaDevices API 미지원");
+        }
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+        document.getElementById("cameraVideo").srcObject = cameraStream;
+      } catch (err) {
+        document.getElementById("cameraFallbackMsg").classList.remove("hidden");
+      }
+    }
+
+    function closeScannerModal() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      document.getElementById("scannerModal").classList.add("hidden");
+    }
+
+    function findBestAugmentMatch(rawText) {
+      const cleaned = rawText.replace(/[^가-힣a-zA-Z0-9]/g, "");
+      if (!cleaned) return null;
+
+      let bestId = null;
+      let bestScore = -1;
+
+      Object.entries(GAME_DATA.augments).forEach(([id, aug]) => {
+        const target = aug.name.replace(/\s+/g, "");
+        if (cleaned.includes(target) || target.includes(cleaned)) {
+          const score = 100 - Math.abs(target.length - cleaned.length);
+          if (score > bestScore) {
+            bestScore = score;
+            bestId = id;
+          }
+          return;
+        }
+        let matchChars = 0;
+        for (const ch of target) {
+          if (cleaned.includes(ch)) matchChars++;
+        }
+        const ratio = (matchChars / target.length) * 80;
+        if (ratio > bestScore && ratio >= 35) {
+          bestScore = ratio;
+          bestId = id;
+        }
+      });
+
+      return bestId;
+    }
+
+    async function processCanvasRegionsWithOCR(sourceCanvas) {
+      const statusBox = document.getElementById("ocrStatusBox");
+      const statusText = document.getElementById("ocrStatusText");
+      const progressPct = document.getElementById("ocrProgressPct");
+
+      statusBox.classList.remove("hidden");
+      statusText.textContent = "한글 OCR 엔진 초기화 중 (첫 실행 시 수 초 소요)...";
+      progressPct.textContent = "10%";
+
+      const regions = [
+        { x: 0.04, y: 0.36, w: 0.29, h: 0.28 },
+        { x: 0.355, y: 0.36, w: 0.29, h: 0.28 },
+        { x: 0.67, y: 0.36, w: 0.29, h: 0.28 }
+      ];
+
+      try {
+        const worker = await Tesseract.createWorker("kor", 1, {
+          logger: m => {
+            if (m.status === "recognizing text") {
+              progressPct.textContent = `${Math.round(m.progress * 100)}%`;
+            }
+          }
+        });
+
+        const detectedIds = [null, null, null];
+
+        for (let i = 0; i < 3; i++) {
+          statusText.textContent = `${i + 1}번 증강 카드 텍스트 판독 중...`;
+          const r = regions[i];
+          const cropCanvas = document.createElement("canvas");
+          const cw = Math.floor(sourceCanvas.width * r.w);
+          const ch = Math.floor(sourceCanvas.height * r.h);
+          cropCanvas.width = cw * 2;
+          cropCanvas.height = ch * 2;
+          const ctx = cropCanvas.getContext("2d");
+
+          ctx.drawImage(
+            sourceCanvas,
+            sourceCanvas.width * r.x,
+            sourceCanvas.height * r.y,
+            cw,
+            ch,
+            0,
+            0,
+            cropCanvas.width,
+            cropCanvas.height
+          );
+
+          const imgData = ctx.getImageData(0, 0, cropCanvas.width, cropCanvas.height);
+          const data = imgData.data;
+          for (let p = 0; p < data.length; p += 4) {
+            const gray = 0.299 * data[p] + 0.587 * data[p + 1] + 0.114 * data[p + 2];
+            const enhanced = gray > 130 ? 255 : 0;
+            data[p] = data[p + 1] = data[p + 2] = enhanced;
+          }
+          ctx.putImageData(imgData, 0, 0);
+
+          const { data: { text } } = await worker.recognize(cropCanvas);
+          detectedIds[i] = findBestAugmentMatch(text);
+        }
+
+        await worker.terminate();
+
+        detectedIds.forEach((id, idx) => {
+          if (id) choiceSlots[idx] = id;
+        });
+
+        statusText.textContent = "스캔 완료! 3지선다 슬롯에 반영되었습니다.";
+        progressPct.textContent = "100%";
+
+        setTimeout(() => {
+          closeScannerModal();
+          renderChoiceSlots();
+        }, 600);
+      } catch (err) {
+        statusText.textContent = "OCR 처리 중 오류가 발생했습니다. 수동 선택을 이용해 주세요.";
+      }
+    }
+
+    async function captureAndRunOCR() {
+      const video = document.getElementById("cameraVideo");
+      if (!video.videoWidth) {
+        alert("카메라 영상이 활성화되지 않았습니다. '가상 모니터 OCR 테스트' 또는 '사진 불러오기'를 이용해 주세요.");
+        return;
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+      await processCanvasRegionsWithOCR(canvas);
+    }
+
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const img = new Image();
+      img.onload = async () => {
+        const preview = document.getElementById("previewCanvas");
+        preview.width = img.width;
+        preview.height = img.height;
+        preview.getContext("2d").drawImage(img, 0, 0);
+        document.getElementById("cameraVideo").classList.add("hidden");
+        document.getElementById("cameraFallbackMsg").classList.add("hidden");
+        preview.classList.remove("hidden");
+        await processCanvasRegionsWithOCR(preview);
+      };
+      img.src = URL.createObjectURL(file);
+    }
+
+    async function runVirtualMonitorTest() {
+      const preview = document.getElementById("previewCanvas");
+      preview.width = 1280;
+      preview.height = 720;
+      const ctx = preview.getContext("2d");
+
+      ctx.fillStyle = "#0b1120";
+      ctx.fillRect(0, 0, 1280, 720);
+
+      const testCards = ["신비한 주먹", "보석 건틀릿", "빵과 버터"];
+      const xs = [60, 460, 860];
+
+      testCards.forEach((title, i) => {
+        ctx.fillStyle = "#1e293b";
+        ctx.fillRect(xs[i], 140, 360, 440);
+        ctx.strokeStyle = "#f59e0b";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(xs[i], 140, 360, 440);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "bold 38px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(title, xs[i] + 180, 365);
+      });
+
+      document.getElementById("cameraVideo").classList.add("hidden");
+      document.getElementById("cameraFallbackMsg").classList.add("hidden");
+      preview.classList.remove("hidden");
+
+      await processCanvasRegionsWithOCR(preview);
+    }
+
+    // ==========================================
+    // 7. JSON 모달 및 외부 data.json 자동 로드
+    // ==========================================
+    function openJsonModal() {
+      document.getElementById("jsonCodeView").textContent = JSON.stringify(GAME_DATA, null, 2);
+      document.getElementById("jsonModal").classList.remove("hidden");
+    }
+
+    function closeJsonModal() {
+      document.getElementById("jsonModal").classList.add("hidden");
+    }
+
+    function copyJsonData() {
+      navigator.clipboard.writeText(JSON.stringify(GAME_DATA, null, 2));
+      alert("JSON 데이터가 클립보드에 복사되었습니다.");
+    }
+
+    function renderAll() {
+      updateDatasetBadge();
+      renderChampionList();
+      renderChampionBuild();
+      renderOwnedAugments();
+      renderChoiceSlots();
+      renderCheatSheet();
+    }
+
+    async function initApp() {
+      try {
+        const res = await fetch(`./data.json?t=${Date.now()}`);
+        if (res.ok) {
+          const latestData = await res.json();
+          if (latestData.champions && Object.keys(latestData.champions).length > 0) {
+            Object.assign(GAME_DATA.champions, latestData.champions);
+          }
+          if (latestData.augments && Object.keys(latestData.augments).length > 0) {
+            Object.assign(GAME_DATA.augments, latestData.augments);
+          }
+          if (latestData._meta && latestData._meta.patch) {
+            currentPatchLabel = latestData._meta.patch;
+          }
+        }
+      } catch (e) {
+        console.warn("외부 data.json 로드 생략, 기본 내장 데이터로 실행합니다.", e);
+      }
+      renderAll();
+    }
+
+    // 초기 실행
+    initApp();
+  </script>
+</body>
+</html>
