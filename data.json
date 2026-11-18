@@ -1,7 +1,7 @@
 {
   "_meta": {
     "patch": "16.23.1",
-    "updatedAt": "2026-11-18 11:24:38 KST",
+    "updatedAt": "2026-11-18 12:17:45 KST",
     "championCount": 173,
     "augmentCount": 225,
     "aramItemCount": 262
@@ -441,7 +441,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "ahri": {
       "name": "아리",
@@ -572,10 +580,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -809,6 +813,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "akali": {
@@ -1081,6 +1094,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "akshan": {
@@ -1180,10 +1201,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -1409,6 +1426,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "alistar": {
@@ -2137,6 +2163,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "ambessa": {
@@ -2665,7 +2700,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "amumu": {
       "name": "아무무",
@@ -3393,6 +3436,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "anivia": {
@@ -3664,6 +3715,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "annie": {
@@ -4495,6 +4554,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "aphelios": {
@@ -4570,10 +4638,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "gohremnantofthewatchers": {
           "tier": "A",
@@ -4703,6 +4767,14 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "ashe": {
@@ -4954,10 +5026,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -5555,6 +5623,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "aurelionsol": {
@@ -5826,6 +5902,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "aurora": {
@@ -6194,7 +6278,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "azir": {
       "name": "아지르",
@@ -6573,7 +6665,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "bard": {
       "name": "바드",
@@ -7405,6 +7505,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "belveth": {
@@ -7841,7 +7950,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "blitzcrank": {
       "name": "블리츠크랭크",
@@ -8569,6 +8685,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "brand": {
@@ -9400,6 +9525,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "braum": {
@@ -10128,7 +10262,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "briar": {
       "name": "브라이어",
@@ -10656,7 +10797,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "caitlyn": {
       "name": "케이틀린",
@@ -10731,10 +10880,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "gohremnantofthewatchers": {
           "tier": "A",
@@ -10864,6 +11009,14 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "camille": {
@@ -11392,7 +11545,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "cassiopeia": {
       "name": "카시오페아",
@@ -11663,6 +11824,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "chogath": {
@@ -12495,6 +12665,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "corki": {
@@ -12622,10 +12801,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -12875,6 +13050,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "darius": {
@@ -13118,10 +13301,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -13715,6 +13894,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "diana": {
@@ -14243,7 +14431,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "draven": {
       "name": "드레이븐",
@@ -14318,10 +14514,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "gohremnantofthewatchers": {
           "tier": "A",
@@ -14451,6 +14643,14 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "drmundo": {
@@ -14694,10 +14894,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -14968,10 +15164,6 @@
           "reason": "[온힛·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "replaceaugment": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "tormentor": {
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
@@ -15291,6 +15483,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "ekko": {
@@ -15659,7 +15860,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "elise": {
       "name": "엘리스",
@@ -15790,10 +15999,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -16027,6 +16232,13 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "evelynn": {
@@ -16395,7 +16607,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "ezreal": {
       "name": "이즈리얼",
@@ -16775,6 +16994,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "fiddlesticks": {
@@ -17606,6 +17833,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "fiora": {
@@ -18134,7 +18370,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "fizz": {
       "name": "피즈",
@@ -18662,7 +18906,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "galio": {
       "name": "갈리오",
@@ -19494,7 +19745,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "gangplank": {
       "name": "갱플랭크",
@@ -19609,10 +19868,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "thebrutalizer": {
           "tier": "A",
@@ -19930,6 +20185,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "garen": {
@@ -20174,10 +20438,6 @@
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
         "breadandbutter": {
           "tier": "A",
           "reason": "[쿨감] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
@@ -20447,10 +20707,6 @@
           "reason": "[온힛·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "replaceaugment": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "tormentor": {
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
@@ -20770,6 +21026,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "gnar": {
@@ -21014,10 +21279,6 @@
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
         "breadandbutter": {
           "tier": "A",
           "reason": "[쿨감] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
@@ -21610,6 +21871,13 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "melee"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "gragas": {
@@ -22198,7 +22466,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "graves": {
       "name": "그레이브즈",
@@ -22406,6 +22682,14 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "gwen": {
@@ -22842,6 +23126,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "hecarim": {
@@ -23682,7 +23975,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "heimerdinger": {
       "name": "하이머딩거",
@@ -24513,6 +24814,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "hwei": {
@@ -25344,6 +25653,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "illaoi": {
@@ -25864,10 +26182,6 @@
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
-        "tormentor": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
         "minionmancer": {
           "tier": "A",
           "reason": "[체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
@@ -26184,6 +26498,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "irelia": {
@@ -26712,7 +27034,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "ivern": {
       "name": "아이번",
@@ -27543,7 +27873,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "janna": {
       "name": "잔나",
@@ -28374,6 +28712,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "jarvaniv": {
@@ -28894,10 +29241,6 @@
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
-        "tormentor": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
         "minionmancer": {
           "tier": "A",
           "reason": "[체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
@@ -29214,6 +29557,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "jax": {
@@ -29650,7 +30002,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "jayce": {
       "name": "제이스",
@@ -30122,7 +30481,13 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee"
+      ],
+      "bannedAugments": {}
     },
     "jhin": {
       "name": "진",
@@ -30249,10 +30614,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -30502,6 +30863,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "jinx": {
@@ -30577,10 +30946,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "gohremnantofthewatchers": {
           "tier": "A",
@@ -30710,6 +31075,14 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "kaisa": {
@@ -31090,6 +31463,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "kalista": {
@@ -31298,7 +31680,14 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "karma": {
       "name": "카르마",
@@ -32129,6 +32518,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "karthus": {
@@ -32400,6 +32798,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "kassadin": {
@@ -32768,6 +33175,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "katarina": {
@@ -33136,6 +33552,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "kayle": {
@@ -33263,10 +33687,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -33516,6 +33936,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "kayn": {
@@ -34044,7 +34473,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "kennen": {
       "name": "케넨",
@@ -34316,6 +34753,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "khazix": {
@@ -34588,7 +35033,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "kindred": {
       "name": "킨드레드",
@@ -34663,10 +35116,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "gohremnantofthewatchers": {
           "tier": "A",
@@ -34796,6 +35245,15 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "kled": {
@@ -35232,7 +35690,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "kogmaw": {
       "name": "코그모",
@@ -35359,10 +35825,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -35612,6 +36074,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "ksante": {
@@ -36452,7 +36922,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "leblanc": {
       "name": "르블랑",
@@ -36820,7 +37298,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "leesin": {
       "name": "리 신",
@@ -37348,7 +37833,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "leona": {
       "name": "레오나",
@@ -38076,6 +38569,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "lillia": {
@@ -38243,10 +38744,6 @@
         "circleofdeath": {
           "tier": "OP",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -38664,6 +39161,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "lissandra": {
@@ -38935,7 +39440,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "locke": {
       "name": "로크",
@@ -39303,6 +39816,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "lucian": {
@@ -39631,6 +40153,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "lulu": {
@@ -40462,7 +40993,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "lux": {
       "name": "럭스",
@@ -41293,6 +41832,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "malphite": {
@@ -42125,7 +42673,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "malzahar": {
       "name": "말자하",
@@ -42396,6 +42952,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "maokai": {
@@ -43124,7 +43688,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "masteryi": {
       "name": "마스터 이",
@@ -43652,6 +44224,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "mel": {
@@ -44483,6 +45064,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "milio": {
@@ -45314,6 +45904,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "missfortune": {
@@ -45441,10 +46040,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -45694,6 +46289,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "monkeyking": {
@@ -46214,10 +46817,6 @@
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
-        "tormentor": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
         "minionmancer": {
           "tier": "A",
           "reason": "[체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
@@ -46534,6 +47133,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "mordekaiser": {
@@ -46701,10 +47308,6 @@
         "circleofdeath": {
           "tier": "OP",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -47122,6 +47725,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "morgana": {
@@ -47953,6 +48565,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "naafiri": {
@@ -48481,6 +49102,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "nami": {
@@ -49312,6 +49942,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "nasus": {
@@ -49555,10 +50194,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -49829,10 +50464,6 @@
           "reason": "[온힛·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "replaceaugment": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "tormentor": {
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
@@ -50152,6 +50783,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "nautilus": {
@@ -50880,6 +51519,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "neeko": {
@@ -51711,7 +52359,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "nidalee": {
       "name": "니달리",
@@ -51842,10 +52497,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -52079,6 +52730,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "ranged"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "nilah": {
@@ -52607,7 +53266,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "nocturne": {
       "name": "녹턴",
@@ -52746,10 +53413,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -53135,6 +53798,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "nunu": {
@@ -53967,6 +54639,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "olaf": {
@@ -54210,10 +54891,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -54484,10 +55161,6 @@
           "reason": "[온힛·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "replaceaugment": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "tormentor": {
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
@@ -54807,6 +55480,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "orianna": {
@@ -55638,7 +56320,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "ornn": {
       "name": "오른",
@@ -56366,7 +57056,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "pantheon": {
       "name": "판테온",
@@ -56894,7 +57591,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "poppy": {
       "name": "뽀삐",
@@ -57734,7 +58438,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "pyke": {
       "name": "파이크",
@@ -58550,7 +59262,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "qiyana": {
       "name": "키아나",
@@ -58822,7 +59542,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "quinn": {
       "name": "퀸",
@@ -59150,7 +59877,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "rakan": {
       "name": "라칸",
@@ -59878,7 +60612,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "rammus": {
       "name": "람머스",
@@ -60606,6 +61348,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "reksai": {
@@ -61446,7 +62196,13 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee"
+      ],
+      "bannedAugments": {}
     },
     "rell": {
       "name": "렐",
@@ -62174,7 +62930,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "renata": {
       "name": "레나타 글라스크",
@@ -63005,6 +63769,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "renekton": {
@@ -63248,10 +64021,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -63845,6 +64614,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "rengar": {
@@ -64373,7 +65151,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "riven": {
       "name": "리븐",
@@ -64901,7 +65687,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "rumble": {
       "name": "럼블",
@@ -65068,10 +65862,6 @@
         "circleofdeath": {
           "tier": "OP",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -65489,6 +66279,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "ryze": {
@@ -65760,7 +66559,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "samira": {
       "name": "사미라",
@@ -66088,7 +66894,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "sejuani": {
       "name": "세주아니",
@@ -66816,7 +67629,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "senna": {
       "name": "세나",
@@ -67067,10 +67887,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -67668,6 +68484,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "seraphine": {
@@ -68500,6 +69325,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "sett": {
@@ -69340,7 +70174,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "shaco": {
       "name": "샤코",
@@ -69612,7 +70454,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "shen": {
       "name": "쉔",
@@ -70340,7 +71189,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "shyvana": {
       "name": "쉬바나",
@@ -70860,10 +71717,6 @@
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
-        "tormentor": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
         "minionmancer": {
           "tier": "A",
           "reason": "[체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
@@ -71180,6 +72033,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "melee"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "singed": {
@@ -72012,6 +72873,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "sion": {
@@ -72852,7 +73721,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "sivir": {
       "name": "시비르",
@@ -72927,10 +73804,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "gohremnantofthewatchers": {
           "tier": "A",
@@ -73060,6 +73933,15 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "skarner": {
@@ -73900,7 +74782,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "smolder": {
       "name": "스몰더",
@@ -74027,10 +74917,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -74280,6 +75166,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "sona": {
@@ -75111,6 +76006,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "soraka": {
@@ -75942,6 +76846,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "swain": {
@@ -76773,6 +77686,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "sylas": {
@@ -77141,7 +78063,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "syndra": {
       "name": "신드라",
@@ -77412,6 +78342,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "tahmkench": {
@@ -78140,6 +79078,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "taliyah": {
@@ -78971,7 +79918,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "talon": {
       "name": "탈론",
@@ -79243,6 +80197,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "taric": {
@@ -79971,6 +80933,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "teemo": {
@@ -80098,10 +81069,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -80351,6 +81318,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "thresh": {
@@ -81079,7 +82054,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "tristana": {
       "name": "트리스타나",
@@ -81178,10 +82161,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -81407,6 +82386,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "trundle": {
@@ -81650,10 +82637,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -82247,6 +83230,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "tryndamere": {
@@ -82386,10 +83378,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -82775,6 +83763,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "twistedfate": {
@@ -83154,7 +84151,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "twitch": {
       "name": "트위치",
@@ -83253,10 +84258,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -83482,6 +84483,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "udyr": {
@@ -84322,7 +85331,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee"
+      ],
+      "bannedAugments": {}
     },
     "urgot": {
       "name": "우르곳",
@@ -85162,7 +86178,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "varus": {
       "name": "바루스",
@@ -85289,10 +86313,6 @@
         "circleofdeath": {
           "tier": "S",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -85542,6 +86562,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "vayne": {
@@ -85641,10 +86669,6 @@
         "bodyguard": {
           "tier": "A",
           "reason": "[체력·기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -85870,6 +86894,14 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "veigar": {
@@ -86141,6 +87173,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "velkoz": {
@@ -86972,6 +88012,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "vex": {
@@ -87243,7 +88292,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "vi": {
       "name": "바이",
@@ -87771,7 +88828,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "viego": {
       "name": "비에고",
@@ -88299,7 +89364,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "viktor": {
       "name": "빅토르",
@@ -88570,6 +89643,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "vladimir": {
@@ -88737,10 +89819,6 @@
         "circleofdeath": {
           "tier": "OP",
           "reason": "[주문력·체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -89158,6 +90236,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "volibear": {
@@ -89998,7 +91085,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "warwick": {
       "name": "워윅",
@@ -90838,7 +91933,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "xayah": {
       "name": "자야",
@@ -91046,7 +92149,14 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "xerath": {
       "name": "제라스",
@@ -91877,6 +92987,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "xinzhao": {
@@ -92120,10 +93238,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -92717,6 +93831,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "yasuo": {
@@ -93245,7 +94368,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "yone": {
       "name": "요네",
@@ -93773,7 +94904,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "yorick": {
       "name": "요릭",
@@ -94016,10 +95155,6 @@
         "quest_woogletswitchcap": {
           "tier": "S",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "earthwake": {
-          "tier": "S",
-          "reason": "[기동력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "breadandbutter": {
           "tier": "A",
@@ -94290,10 +95425,6 @@
           "reason": "[온힛·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
         "replaceaugment": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
-        "tormentor": {
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
@@ -94613,6 +95744,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "yunara": {
@@ -94821,6 +95961,14 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "yuumi": {
@@ -95340,10 +96488,6 @@
           "tier": "A",
           "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         },
-        "tormentor": {
-          "tier": "A",
-          "reason": "[유틸] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
-        },
         "minionmancer": {
           "tier": "A",
           "reason": "[체력] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
@@ -95652,6 +96796,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "zaahen": {
@@ -96088,7 +97241,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "zac": {
       "name": "자크",
@@ -96928,7 +98089,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "zed": {
       "name": "제드",
@@ -97200,6 +98369,15 @@
           "tier": "S",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "has_heal_shield",
+        "melee",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "zeri": {
@@ -97408,6 +98586,14 @@
           "tier": "S",
           "reason": "[치명타] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_dash",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음"
       }
     },
     "ziggs": {
@@ -97679,6 +98865,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "tormentor": "이동 불가(CC) 스킬 없음",
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "zilean": {
@@ -98510,6 +99704,15 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "has_heal_shield",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     },
     "zoe": {
@@ -98781,7 +99984,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
-      }
+      },
+      "traits": [
+        "has_dash",
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {}
     },
     "zyra": {
       "name": "자이라",
@@ -99612,6 +100822,14 @@
           "tier": "A",
           "reason": "[쿨감·물리] 시너지가 챔피언 역할군과 잘 맞아 교전 효율이 크게 상승합니다."
         }
+      },
+      "traits": [
+        "has_hard_cc",
+        "ranged",
+        "standard_ult"
+      ],
+      "bannedAugments": {
+        "earthwake": "자체 돌진·이동 스킬 없음"
       }
     }
   },
